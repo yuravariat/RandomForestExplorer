@@ -2,13 +2,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RandomForestExplorer.Annotations;
+using System.Collections.Generic;
 
 namespace RandomForestExplorer.Data
 {
     public class DataModel : INotifyPropertyChanged
     {
+        private bool _isReady;
+        private bool _inProcess;
         private string _fileName;
+        private string _trainingFileName;
         private string _relation;
+        private bool _trainingEnabled;
+        private bool _trainingFromFile;
 
         public DataModel()
         {
@@ -19,12 +25,50 @@ namespace RandomForestExplorer.Data
             Instances.CollectionChanged += (p_sender, p_args) => OnPropertyChanged("TotalInstances");
             Features = new ObservableCollection<Feature>();
             Features.CollectionChanged += (p_sender, p_args) => OnPropertyChanged("TotalFeatures");
+
+            TrainingInstances = new List<Instance>();
+        }
+
+        public bool IsReady
+        {
+            get { return _isReady; }
+            set { _isReady = value; OnPropertyChanged(); }
+        }
+
+        public bool InProcess
+        {
+            get { return _inProcess; }
+            set { _inProcess = value; OnPropertyChanged(); }
+        }
+
+        public bool TrainingFromFile
+        {
+            get { return _trainingFromFile; }
+            set { _trainingFromFile = value; OnPropertyChanged(); }
+        }
+
+        public bool TrainingFromData
+        {
+            get { return !_trainingFromFile; }
+            set { _trainingFromFile = !value; OnPropertyChanged(); }
+        }
+
+        public bool TrainingEnabled
+        {
+            get { return _trainingEnabled; }
+            set { _trainingEnabled = value; OnPropertyChanged(); }
         }
 
         public string FileName
         {
             get { return _fileName; }
             set { _fileName = value; OnPropertyChanged(); }
+        }
+
+        public string TrainingFileName
+        {
+            get { return _trainingFileName; }
+            set { _trainingFileName = value; OnPropertyChanged(); }
         }
 
         public string Relation
@@ -46,7 +90,9 @@ namespace RandomForestExplorer.Data
         public ObservableCollection<string> Classes { get; set; }
         public ObservableCollection<Instance> Instances { get; set; }
         public ObservableCollection<Feature> Features { get; set; }
+        public List<Instance> TrainingInstances { get; set; }
 
+        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -55,5 +101,6 @@ namespace RandomForestExplorer.Data
             if (PropertyChanged != null) 
                 PropertyChanged(this, new PropertyChangedEventArgs(p_propertyName));
         }
+        #endregion
     }
 }
