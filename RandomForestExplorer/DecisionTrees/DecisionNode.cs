@@ -19,7 +19,7 @@ namespace RandomForestExplorer.DecisionTrees
         /// Split value that splits the data into two groups. 
         /// x > value and x < value.
         /// </summary>
-        public decimal SplitValue;
+        public double SplitValue;
 
         // Case when it is leaf
 
