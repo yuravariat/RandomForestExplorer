@@ -8,6 +8,7 @@ namespace RandomForestExplorer
     {
         private DataModel _model;
         public Action<string> OnFileLoad;
+        public Action<string> OnTrainingFileLoad;
         public Action OnStart;
         public Action OnStop;
 
@@ -42,9 +43,24 @@ namespace RandomForestExplorer
         private void Bind()
         {
             filePathLbl.DataBindings.Add("Text", _model, "FileName", false, DataSourceUpdateMode.OnPropertyChanged);
+            trainingFilePathLbl.DataBindings.Add("Text", _model, "TrainingFileName", false, DataSourceUpdateMode.OnPropertyChanged);
+
             relationNameLbl.DataBindings.Add("Text", _model, "Relation", false, DataSourceUpdateMode.OnPropertyChanged);
             instancesCountLbl.DataBindings.Add("Text", _model, "TotalInstances", false, DataSourceUpdateMode.OnPropertyChanged);
             attributesCountLbl.DataBindings.Add("Text", _model, "TotalFeatures", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            trainingGroupBox.DataBindings.Add("Enabled", _model, "TrainingEnabled", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            splitFileRb.DataBindings.Add("Checked", _model, "TrainingFromData", false, DataSourceUpdateMode.OnPropertyChanged);
+            percentSplit.DataBindings.Add("Enabled", splitFileRb, "Checked", false, DataSourceUpdateMode.OnPropertyChanged);
+            percentSplitLbl.DataBindings.Add("Enabled", splitFileRb, "Checked", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            loadFileRb.DataBindings.Add("Checked", _model, "TrainingFromFile", false, DataSourceUpdateMode.OnPropertyChanged);
+            openTrainingFileBtn.DataBindings.Add("Enabled", loadFileRb, "Checked", false, DataSourceUpdateMode.OnPropertyChanged);
+            trainingFilePathLbl.DataBindings.Add("Enabled", loadFileRb, "Checked", false, DataSourceUpdateMode.OnPropertyChanged);
+
+            startBtn.DataBindings.Add("Enabled", _model, "IsReady", false, DataSourceUpdateMode.OnPropertyChanged);
+            stopBtn.DataBindings.Add("Enabled", _model, "InProcess", false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void UnBind()
@@ -89,6 +105,15 @@ namespace RandomForestExplorer
             {
                 if (OnFileLoad != null)
                     OnFileLoad(openFileDialog.FileName);
+            }
+        }
+
+        private void OpenTrainingFileBtnClick(object sender, EventArgs e)
+        {
+            if (openTrainingFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (OnTrainingFileLoad != null)
+                    OnTrainingFileLoad(openTrainingFileDialog.FileName);
             }
         }
 

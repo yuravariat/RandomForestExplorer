@@ -23,6 +23,15 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.trainingGroupBox = new System.Windows.Forms.GroupBox();
+            this.trainingFilePathLbl = new System.Windows.Forms.Label();
+            this.openTrainingFileBtn = new System.Windows.Forms.Button();
+            this.splitFileRb = new System.Windows.Forms.RadioButton();
+            this.loadFileRb = new System.Windows.Forms.RadioButton();
+            this.percentSplitLbl = new System.Windows.Forms.Label();
+            this.percentSplit = new System.Windows.Forms.NumericUpDown();
+            this.numOfFeatures = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.treeDepth = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.numOfTrees = new System.Windows.Forms.NumericUpDown();
@@ -37,19 +46,17 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.stopBtn = new System.Windows.Forms.Button();
             this.startBtn = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.percentSplit = new System.Windows.Forms.NumericUpDown();
-            this.numOfFeatures = new System.Windows.Forms.NumericUpDown();
+            this.openTrainingFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.trainingGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOfTrees)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -59,7 +66,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(553, 45);
+            this.groupBox1.Size = new System.Drawing.Size(612, 45);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -92,15 +99,14 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 45);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(553, 139);
+            this.groupBox2.Size = new System.Drawing.Size(612, 259);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.trainingGroupBox);
             this.groupBox4.Controls.Add(this.numOfFeatures);
-            this.groupBox4.Controls.Add(this.percentSplit);
-            this.groupBox4.Controls.Add(this.label4);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.treeDepth);
             this.groupBox4.Controls.Add(this.label2);
@@ -109,10 +115,108 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(203, 16);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(347, 120);
+            this.groupBox4.Size = new System.Drawing.Size(406, 240);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Configuration";
+            // 
+            // trainingGroupBox
+            // 
+            this.trainingGroupBox.Controls.Add(this.trainingFilePathLbl);
+            this.trainingGroupBox.Controls.Add(this.openTrainingFileBtn);
+            this.trainingGroupBox.Controls.Add(this.splitFileRb);
+            this.trainingGroupBox.Controls.Add(this.loadFileRb);
+            this.trainingGroupBox.Controls.Add(this.percentSplitLbl);
+            this.trainingGroupBox.Controls.Add(this.percentSplit);
+            this.trainingGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.trainingGroupBox.Location = new System.Drawing.Point(3, 90);
+            this.trainingGroupBox.Name = "trainingGroupBox";
+            this.trainingGroupBox.Size = new System.Drawing.Size(400, 147);
+            this.trainingGroupBox.TabIndex = 8;
+            this.trainingGroupBox.TabStop = false;
+            this.trainingGroupBox.Text = "Training";
+            // 
+            // trainingFilePathLbl
+            // 
+            this.trainingFilePathLbl.AutoSize = true;
+            this.trainingFilePathLbl.Location = new System.Drawing.Point(8, 121);
+            this.trainingFilePathLbl.Name = "trainingFilePathLbl";
+            this.trainingFilePathLbl.Size = new System.Drawing.Size(0, 13);
+            this.trainingFilePathLbl.TabIndex = 10;
+            // 
+            // openTrainingFileBtn
+            // 
+            this.openTrainingFileBtn.Location = new System.Drawing.Point(7, 90);
+            this.openTrainingFileBtn.Name = "openTrainingFileBtn";
+            this.openTrainingFileBtn.Size = new System.Drawing.Size(121, 23);
+            this.openTrainingFileBtn.TabIndex = 9;
+            this.openTrainingFileBtn.Text = "Open Training File ...";
+            this.openTrainingFileBtn.UseVisualStyleBackColor = true;
+            this.openTrainingFileBtn.Click += new System.EventHandler(this.OpenTrainingFileBtnClick);
+            // 
+            // splitFileRb
+            // 
+            this.splitFileRb.AutoSize = true;
+            this.splitFileRb.Location = new System.Drawing.Point(7, 19);
+            this.splitFileRb.Name = "splitFileRb";
+            this.splitFileRb.Size = new System.Drawing.Size(64, 17);
+            this.splitFileRb.TabIndex = 8;
+            this.splitFileRb.TabStop = true;
+            this.splitFileRb.Text = "Split File";
+            this.splitFileRb.UseVisualStyleBackColor = true;
+            // 
+            // loadFileRb
+            // 
+            this.loadFileRb.AutoSize = true;
+            this.loadFileRb.Location = new System.Drawing.Point(7, 67);
+            this.loadFileRb.Name = "loadFileRb";
+            this.loadFileRb.Size = new System.Drawing.Size(68, 17);
+            this.loadFileRb.TabIndex = 7;
+            this.loadFileRb.TabStop = true;
+            this.loadFileRb.Text = "Load File";
+            this.loadFileRb.UseVisualStyleBackColor = true;
+            // 
+            // percentSplitLbl
+            // 
+            this.percentSplitLbl.AutoSize = true;
+            this.percentSplitLbl.Location = new System.Drawing.Point(6, 42);
+            this.percentSplitLbl.Name = "percentSplitLbl";
+            this.percentSplitLbl.Size = new System.Drawing.Size(103, 13);
+            this.percentSplitLbl.TabIndex = 5;
+            this.percentSplitLbl.Text = "Percentage split (%):";
+            // 
+            // percentSplit
+            // 
+            this.percentSplit.Location = new System.Drawing.Point(115, 40);
+            this.percentSplit.Name = "percentSplit";
+            this.percentSplit.Size = new System.Drawing.Size(53, 20);
+            this.percentSplit.TabIndex = 6;
+            this.percentSplit.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            // 
+            // numOfFeatures
+            // 
+            this.numOfFeatures.Location = new System.Drawing.Point(110, 64);
+            this.numOfFeatures.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numOfFeatures.Name = "numOfFeatures";
+            this.numOfFeatures.Size = new System.Drawing.Size(53, 20);
+            this.numOfFeatures.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Number of features:";
             // 
             // treeDepth
             // 
@@ -172,7 +276,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox3.Location = new System.Drawing.Point(3, 16);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 120);
+            this.groupBox3.Size = new System.Drawing.Size(200, 240);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Current relation";
@@ -239,9 +343,9 @@
             this.groupBox5.Controls.Add(this.stopBtn);
             this.groupBox5.Controls.Add(this.startBtn);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(0, 184);
+            this.groupBox5.Location = new System.Drawing.Point(0, 304);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(553, 46);
+            this.groupBox5.Size = new System.Drawing.Size(612, 46);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
             // 
@@ -265,53 +369,15 @@
             this.startBtn.UseVisualStyleBackColor = true;
             this.startBtn.Click += new System.EventHandler(this.StartBtnClick);
             // 
-            // label3
+            // openTrainingFileDialog
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Number of features:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 92);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Percentage split (%):";
-            // 
-            // percentSplit
-            // 
-            this.percentSplit.Location = new System.Drawing.Point(110, 90);
-            this.percentSplit.Name = "percentSplit";
-            this.percentSplit.Size = new System.Drawing.Size(53, 20);
-            this.percentSplit.TabIndex = 6;
-            this.percentSplit.Value = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            // 
-            // numOfFeatures
-            // 
-            this.numOfFeatures.Location = new System.Drawing.Point(110, 64);
-            this.numOfFeatures.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numOfFeatures.Name = "numOfFeatures";
-            this.numOfFeatures.Size = new System.Drawing.Size(53, 20);
-            this.numOfFeatures.TabIndex = 7;
+            this.openTrainingFileDialog.Filter = "Weka training files|*.txt";
             // 
             // Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(553, 402);
+            this.ClientSize = new System.Drawing.Size(612, 521);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -322,13 +388,15 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.trainingGroupBox.ResumeLayout(false);
+            this.trainingGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOfTrees)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -358,7 +426,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numOfFeatures;
         private System.Windows.Forms.NumericUpDown percentSplit;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label percentSplitLbl;
+        private System.Windows.Forms.GroupBox trainingGroupBox;
+        private System.Windows.Forms.RadioButton splitFileRb;
+        private System.Windows.Forms.RadioButton loadFileRb;
+        private System.Windows.Forms.OpenFileDialog openTrainingFileDialog;
+        private System.Windows.Forms.Button openTrainingFileBtn;
+        private System.Windows.Forms.Label trainingFilePathLbl;
     }
 }
 
