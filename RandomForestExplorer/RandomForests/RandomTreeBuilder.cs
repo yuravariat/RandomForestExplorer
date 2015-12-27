@@ -61,7 +61,7 @@ namespace RandomForestExplorer.RandomForests
             var giniScore = GiniScore(instances);
 
             // Gini score of the group is 0, the group is pure. or there is too few instances 
-            if (giniScore.Item1==0 || instances.Count == 20)
+            if (giniScore.Item1==0 || instances.Count <= 20)
             {
                 node.Item.Clacification = giniScore.Item2;
                 return node;
