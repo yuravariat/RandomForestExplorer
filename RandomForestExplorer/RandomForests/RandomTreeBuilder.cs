@@ -31,7 +31,7 @@ namespace RandomForestExplorer.RandomForests
                 DecisionTree tree = new DecisionTree();
                 tree.OutputType = TreeOutput.ClassifiedCategory;
 
-                if (randomFeaturesNum.HasValue && randomFeaturesNum.Value > _model.Features.Count - 1)
+                if (!randomFeaturesNum.HasValue && randomFeaturesNum.Value > _model.Features.Count - 1)
                 {
                     _randomFeaturesNum = _model.Features.Count - 1;
                 }
