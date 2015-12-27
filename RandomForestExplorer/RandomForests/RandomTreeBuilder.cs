@@ -94,6 +94,13 @@ namespace RandomForestExplorer.RandomForests
                 }
             }
 
+            // There is no improvment no need to split.
+            if(minScore >= giniScore.Item1)
+            {
+                node.Item.Clacification = giniScore.Item2;
+                return node;
+            }
+
             // Create decision item
             node.Item = new DecisionNode();
             node.Item.SplitFeature = minScoreFeature.Name;
