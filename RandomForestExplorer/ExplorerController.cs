@@ -34,8 +34,7 @@ namespace RandomForestExplorer
                                             _view.NumberOfTrees, 
                                             _view.NumberOfFeatures,
                                             _view.TreeDepth,
-                                            1,
-                                            _view.PercentSplit);
+                                            1);
             _solver.Run();
 
             _model.IsReady = true;
