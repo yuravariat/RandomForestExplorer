@@ -22,7 +22,7 @@ namespace RandomForestExplorer.DecisionTrees
         /// <summary>
         /// The parent of the Item.
         /// </summary>
-        ITreeNode<T> Parent { get; }
+        ITreeNode<T> Parent { get; set; }
 
         /// <summary>
         /// The item being adapted.
