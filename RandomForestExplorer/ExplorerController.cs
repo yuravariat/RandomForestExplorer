@@ -52,6 +52,9 @@ namespace RandomForestExplorer
             _model.TrainingEnabled = true;
             _model.TrainingFromFile = true;
             _model.IsReady = true;
+
+            RandomTreeBuilder bld = new RandomTreeBuilder(_model);
+            bld.BuildRandomDecisionTree();
         }
 
         private void OnTrainingFileLoad(string p_fileName)
