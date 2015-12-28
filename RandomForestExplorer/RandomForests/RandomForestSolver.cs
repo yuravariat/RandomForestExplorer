@@ -24,12 +24,8 @@ namespace RandomForestExplorer.RandomForests
 
         public void Run()
         {
-            //randomizing features
-            //var featureIndexes = _randomizer.Randomize(_seed, 0, _dataModel.TotalFeatures, _numOfFeatures);
-            //foreach (var index in featureIndexes)
-            //{
-            //    treeNode.Features.Add(index);
-            //}
+            var randTreeBld = new RandomTreeBuilder2(_dataModel, _numOfFeatures, _seed);
+            randTreeBld.Build();
         }
 
         private int AdjustNumOfFeatures(int p_numOfFeatures)

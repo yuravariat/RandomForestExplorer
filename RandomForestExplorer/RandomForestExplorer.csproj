@@ -68,6 +68,7 @@
     <Compile Include="DecisionTrees\ITreeNodeExtensions.cs" />
     <Compile Include="DecisionTrees\TreeNode.cs" />
     <Compile Include="RandomForests\RandomTreeBuilder.cs" />
+    <Compile Include="RandomForests\RandomTreeBuilder2.cs" />
     <EmbeddedResource Include="Explorer.resx">
       <DependentUpon>Explorer.cs</DependentUpon>
     </EmbeddedResource>
