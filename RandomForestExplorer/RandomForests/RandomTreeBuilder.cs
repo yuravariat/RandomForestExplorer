@@ -69,8 +69,9 @@ namespace RandomForestExplorer.RandomForests
         {
             TreeNode node = new TreeNode();
             node.Item = new DecisionNode();
+
             // stop condition
-            var giniScore = GiniScore(instances,0, instances.Count);
+            var giniScore = GiniScore(instances);
 
             // Gini score of the group is 0, the group is pure. or there is too few instances 
             if (giniScore.Item1==0 || instances.Count <= 20)
@@ -88,75 +89,73 @@ namespace RandomForestExplorer.RandomForests
             Feature minScoreFeature = null;
 
             //Metric
-            Stopwatch swSplit = new Stopwatch();
             Stopwatch swTotalAllSplits = new Stopwatch();
-            List<double> miliseconds = new List<double>(instances.Count);
+            //Stopwatch swSplit = new Stopwatch();
+            //List<double> miliseconds = new List<double>(instances.Count);
 
             swTotalAllSplits.Start();
+
+            // Classes counters
+            Dictionary<string, int> totalCalssesS1 = new Dictionary<string, int>();       
+            Dictionary<string, int> totalCalssesS2 = new Dictionary<string, int>();       
+            foreach (string classe in _model.Classes)                                     
+            {                                                                             
+                totalCalssesS1.Add(classe, 0);                                            
+                totalCalssesS2.Add(classe, 0);                                            
+            }
+            int totalSubset1, totalSubset2 = 0;
 
             // Loop thought all feature and all values.
             foreach (Feature feature in features)
             {
-                instances.Sort((a, b) => a.Values[feature.ID].CompareTo(b.Values[feature.ID]));
+                int featureIndex = feature.ID - 1;
+                instances.Sort((a, b) => a.Values[featureIndex].CompareTo(b.Values[featureIndex]));
 
-                /////////////////// Dictnary approach //////////////////////////////////////////
-                Dictionary<string, int> totalCalssesG1 = new Dictionary<string, int>();       //
-                Dictionary<string, int> totalCalssesG2 = new Dictionary<string, int>();       //
-                foreach (string classe in _model.Classes)                                     //
-                {                                                                             //
-                    totalCalssesG1.Add(classe, 0);                                            //
-                    totalCalssesG2.Add(classe, 0);                                            //
-                }                                                                             //
-                for (int i = 0; i < instances.Count; i++)                                     //
-                {                                                                             //
-                    totalCalssesG2[instances[i].Class] += 1;                                  //
-                }                                                                             //
-                                                                                              //
-                int totalGroup1 = 1;                                                          //
-                int totalGroup2 = instances.Count - totalGroup1;                              //
-                totalCalssesG1[instances[0].Class] += 1;                                      //
-                totalCalssesG2[instances[0].Class] -= 1;                                      //
-                ////////////////////////////////////////////////////////////////////////////////
+                // Reset counters
+                foreach (string classe in _model.Classes)                                     
+                {                                                                             
+                    totalCalssesS1[classe] = 0;                                               
+                    totalCalssesS2[classe] = 0;                                               
+                }                                                                             
+                for (int i = 0; i < instances.Count; i++)                                     
+                {                                                                             
+                    totalCalssesS2[instances[i].Class] += 1;                                  
+                }                                                                                                                          
+                totalSubset1 = 0;                                                          
+                totalSubset2 = instances.Count;                                                                   
 
-                for (int i = 1; i < instances.Count; i++)
+                for (int i = 0; i < instances.Count; i++)
                 {
-                    swSplit.Reset();
-                    swSplit.Start();
+                    //swSplit.Reset();
+                    //swSplit.Start();
 
-                    // if previous value was the same dont calculate gini.
-                    if (i > 0 && instances[i].Values[feature.ID] == instances[i - 1].Values[feature.ID])
+                    // Update counters
+                    totalCalssesS1[instances[i].Class] += 1;                                 
+                    totalCalssesS2[instances[i].Class] -= 1;                                 
+                    totalSubset1 += 1;                                                        
+                    totalSubset2 -= 1;                                                        
+
+                    // if next value has the same value dont calculate gini split is not finished.
+                    if (i < (instances.Count-1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
                     {
                         continue;
                     }
 
-                    // var totalScore = GiniScore(instances, 0, i).Item1 + GiniScore(instances, i, instances.Count).Item1;
-
-                    ///////////// Dictnary approach ////////////////////////////////////////////
-                    totalCalssesG1[instances[0].Class] += 1;                                  //
-                    totalCalssesG2[instances[0].Class] -= 1;                                  //
-                    totalGroup1+= 1;                                                          //
-                    totalGroup2-= 1;                                                          //
-                                                                                              //
-                    var max1 = totalCalssesG1.OrderByDescending(k => k.Value).First();        //
-                    var P1 = (double)max1.Value / (double)totalGroup1;                        //
-                    var gini1 = (2 * P1 * (1 - P1));                                          //
-                                                                                              //
-                    var max2 = totalCalssesG2.OrderByDescending(k => k.Value).First();        //
-                    var P2 = (double)max2.Value / (double)totalGroup2;                        //
-                    var gini2 = (2 * P2 * (1 - P2));                                          //
-                                                                                              //
-                    var totalScore = gini1 + gini2;                                           //
-                    ////////////////////////////////////////////////////////////////////////////
+                    // Calculate gini from two subsets
+                    var gini1 = GiniScore(totalCalssesS1);                                    
+                    var gini2 = GiniScore(totalCalssesS2);                                    
+                    var totalScore = gini1.Item1 * ((double)totalSubset1 / (double)instances.Count)  + 
+                                     gini2.Item1 * ((double)totalSubset2 / (double)instances.Count);                               
 
                     if (totalScore < minScore)
                     {
                         minScore = totalScore;
-                        splitValue = instances[i].Values[feature.ID];
+                        splitValue = instances[i].Values[featureIndex];
                         minScoreFeature = feature;
                     }
 
-                    swSplit.Stop();
-                    miliseconds.Add(swSplit.Elapsed.TotalMilliseconds);
+                    //swSplit.Stop();
+                    //miliseconds.Add(swSplit.Elapsed.TotalMilliseconds);
                 }
             }
             swTotalAllSplits.Stop();
@@ -176,8 +175,13 @@ namespace RandomForestExplorer.RandomForests
             node.Item.SplitValue = splitValue;
 
             // Create right and left nodes
-            node.Left = CreateNode(instances.Where(i => i.Values[minScoreFeature.ID] < splitValue).ToList());
-            node.Right = CreateNode(instances.Where(i => i.Values[minScoreFeature.ID] >= splitValue).ToList());
+            var subsetLeft = instances.Where(i => i.Values[minScoreFeature.ID - 1] <= splitValue).ToList();
+            var subsetRight = instances.Where(i => i.Values[minScoreFeature.ID - 1] > splitValue).ToList();
+            node.Left = CreateNode(subsetLeft);
+            node.Right = CreateNode(subsetRight);
+            node.Right.Parent = node;
+            node.Left.Parent = node;
+
             return node;
 
         }
@@ -186,25 +190,33 @@ namespace RandomForestExplorer.RandomForests
         /// </summary>
         /// <param name="instances"></param>
         /// <returns></returns>
-        private Tuple<double,string> GiniScore(List<Instance> instances,int startIndex, int endIndex)
+        private Tuple<double,string> GiniScore(Dictionary<string, int> classesCounts)
         {
-            
-            Dictionary<string, int>  counts = new Dictionary<string, int>();
-            foreach (string classe in _model.Classes)
+            double sum = 0d;
+            foreach(string classe in classesCounts.Keys)
             {
-                counts.Add(classe, 0);
+                if (classesCounts[classe] > 0)
+                {
+                    double frefrequency = (((double)classesCounts[classe]) / ((double)classesCounts.Sum(v => v.Value)));
+                    sum += frefrequency * frefrequency;
+                }
             }
-            for (int i = startIndex; i < endIndex && i < instances.Count; i++)
+            return new Tuple<double, string>(1-sum, classesCounts.OrderByDescending(k => k.Value).First().Key);
+        }
+        private Tuple<double, string> GiniScore(List<Instance> instances)
+        {
+            Dictionary<string, int> totalCalsses = new Dictionary<string, int>();       
+            for (int i = 0; i < instances.Count; i++)                                     
             {
-                counts[instances[i].Class] += 1;
+                if (!totalCalsses.ContainsKey(instances[i].Class))
+                {
+                    totalCalsses.Add(instances[i].Class, 1);
+                }
+                else {
+                    totalCalsses[instances[i].Class] += 1;
+                }                        
             }
-            var max = counts.OrderBy(k => k.Value).First();
-            var P1 = (double)max.Value / ((double)(endIndex - startIndex));
-            return new Tuple<double, string>((2 * P1 * (1 - P1)), max.Key);
-
-            //var MaxGroup = instances.Skip(startIndex).Take(endIndex - startIndex).GroupBy(g => g.Class).OrderBy(g => g.Count()).First();
-            //var P1 = (double)MaxGroup.Count() / (double)instances.Count();
-            //return new Tuple<double, string>((2 * P1 * (1 - P1)), MaxGroup.Key);
+            return GiniScore(totalCalsses);
         }
         /// <summary>
         /// Returns random features
@@ -214,7 +226,7 @@ namespace RandomForestExplorer.RandomForests
         {
             if (_model != null && _model.Features != null)
             {
-                return _model.Features.Take(_randomFeaturesNum);
+                return _model.Features.OrderBy(arg => Guid.NewGuid()).Take(_randomFeaturesNum);
             }
             return null;
         }
