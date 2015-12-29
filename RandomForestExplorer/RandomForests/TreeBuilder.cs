@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace RandomForestExplorer.RandomForests
 {
-    class RandomTreeBuilder
+    class TreeBuilder
     {
         private DataModel _model;
         private Randomizer _randomizer;
@@ -18,7 +18,7 @@ namespace RandomForestExplorer.RandomForests
         private int _treeDepth;
         private int _numOfFeatures;
 
-        public RandomTreeBuilder(DataModel model, int numOfFeatures, int seed, int depth)
+        public TreeBuilder(DataModel model, int numOfFeatures, int seed, int depth)
         {
             _model = model;
             _seed = seed;

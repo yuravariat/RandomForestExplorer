@@ -35,15 +35,21 @@ namespace RandomForestExplorer
                                             _view.NumberOfFeatures,
                                             _view.TreeDepth,
                                             1);
-            _solver.Run();
 
-            _model.IsReady = true;
-            _model.InProcess = false;
+            _solver.OnCompletion = new Action(OnSolverComletion);
+            _solver.Run();
         }
 
         private void OnStop()
         {
-            
+            _solver.Cancel();
+            OnSolverComletion();
+        }
+
+        private void OnSolverComletion()
+        {
+            _model.IsReady = true;
+            _model.InProcess = false;
         }
 
         private void OnFileLoad(string p_fileName)
@@ -169,6 +175,11 @@ namespace RandomForestExplorer
             _view.OnFileLoad = null;
             _view.Dispose();
             _view = null;
+
+            if (_solver != null)
+                _solver.OnCompletion = null;
+            _solver = null;
+
             _model = null;
         }
     }
