@@ -13,59 +13,45 @@ namespace RandomForestExplorer.RandomForests
     class RandomTreeBuilder
     {
         private DataModel _model;
-        private int _randomFeaturesNum;
+        private Randomizer _randomizer;
+        private int _seed;
+        private int _treeDepth;
+        private int _numOfFeatures;
 
-        public RandomTreeBuilder(DataModel model)
+        public RandomTreeBuilder(DataModel model, int numOfFeatures, int seed, int depth)
         {
             _model = model;
+            _seed = seed;
+            _treeDepth = depth;
+            _numOfFeatures = numOfFeatures;
+            _randomizer = new Randomizer();
         }
-        /// <summary>
-        /// Creates random decision tree from dataset.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="randomFeaturesNum"></param>
-        /// <returns></returns>
-        public DecisionTree BuildRandomDecisionTree(int? randomFeaturesNum = null)
+
+        public DecisionTree Build()
         {
             if (_model != null && _model.Features.Count > 0)
             {
                 DecisionTree tree = new DecisionTree();
                 tree.OutputType = TreeOutput.ClassifiedCategory;
 
-                if (randomFeaturesNum.HasValue && randomFeaturesNum.Value > _model.Features.Count - 1)
-                {
-                    if (randomFeaturesNum.Value > _model.Features.Count - 1)
-                    {
-                        _randomFeaturesNum = _model.Features.Count - 1;
-                    }
-                    else
-                    {
-                        _randomFeaturesNum = randomFeaturesNum.Value;
-                    }
-                }
-                else
-                {
-                    _randomFeaturesNum = (int)Math.Sqrt(_model.Features.Count);
-                }
+                var watch = Stopwatch.StartNew();
+                tree.RootNode = CreateNode(_model.Instances.ToList(), 0);
+                watch.Stop();
 
-                Stopwatch swTreeBuild = new Stopwatch();
-
-                swTreeBuild.Start();
-                tree.RootNode = CreateNode(_model.Instances.ToList());
-                swTreeBuild.Stop();
-                double buildTreeTime = swTreeBuild.Elapsed.TotalMilliseconds;
+                double buildTreeTime = watch.Elapsed.TotalMilliseconds;
 
                 return tree;
             }
             return null;
         }
+
         /// <summary>
         /// Splits one node into two groups or stops with  leaf (Clacification decision)
         /// </summary>
         /// <param name="node"></param>
         /// <param name="instances"></param>
         /// <param name="randomFeaturesNum"></param>
-        private TreeNode CreateNode(List<Instance> instances, Tuple<double, string> giniPrevScore=null)
+        private TreeNode CreateNode(List<Instance> instances, int treeDepth, Tuple<double, string> giniPrevScore=null)
         {
             TreeNode node = new TreeNode();
             node.Item = new DecisionNode();
@@ -73,23 +59,25 @@ namespace RandomForestExplorer.RandomForests
             // stop condition
             if (giniPrevScore == null)
             {
-                giniPrevScore = GiniScore(instances);
+                string @class;
+                var giniScore = GiniScore(instances, out @class);
+                giniPrevScore = new Tuple<double, string>(giniScore, @class);
             }
 
             // Gini score of the group is 0, the group is pure. or there is too few instances 
-            if (giniPrevScore.Item1==0 || instances.Count <= 20)
+            if (giniPrevScore.Item1==0 || instances.Count <= 20 || treeDepth == _treeDepth)
             {
                 node.Item.Clacification = giniPrevScore.Item2;
                 return node;
             }
 
             // get random features
-            var features = RandomizeFeatures();
+            var featureIndexes = RandomizeFeatures();
 
 
             double minScore = Double.MaxValue;
             double splitValue = 0;
-            Feature minScoreFeature = null;
+            int minScoreFeatureIndex = -1;
 
             //Metric
             Stopwatch swTotalAllSplits = new Stopwatch();
@@ -110,9 +98,8 @@ namespace RandomForestExplorer.RandomForests
             Tuple<double,string> min_gini1 = null, min_gini2 = null;
 
             // Loop thought all feature and all values.
-            foreach (Feature feature in features)
+            foreach (var featureIndex in featureIndexes)
             {
-                int featureIndex = feature.ID - 1;
                 instances.Sort((a, b) => a.Values[featureIndex].CompareTo(b.Values[featureIndex]));
 
                 // Reset counters
@@ -130,9 +117,6 @@ namespace RandomForestExplorer.RandomForests
 
                 for (int i = 0; i < instances.Count; i++)
                 {
-                    //swSplit.Reset();
-                    //swSplit.Start();
-
                     // Update counters
                     totalCalssesS1[instances[i].Class] += 1;                                 
                     totalCalssesS2[instances[i].Class] -= 1;                                 
@@ -146,22 +130,22 @@ namespace RandomForestExplorer.RandomForests
                     }
 
                     // Calculate gini from two subsets
-                    var gini1 = GiniScore(totalCalssesS1);                                    
-                    var gini2 = GiniScore(totalCalssesS2);                                    
-                    var totalScore = gini1.Item1 * ((double)totalSubset1 / (double)instances.Count)  + 
-                                     gini2.Item1 * ((double)totalSubset2 / (double)instances.Count);                               
+                    string @class1;
+                    var gini1 = GiniScore(totalCalssesS1, out @class1);
+                    string @class2;
+                    var gini2 = GiniScore(totalCalssesS2, out @class2);    
+                    
+                    //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
+                    var totalScore = gini1 * ((double)totalSubset1 / (double)instances.Count)  +  gini2 * ((double)totalSubset2 / (double)instances.Count);                               
 
                     if (totalScore < minScore)
                     {
                         minScore = totalScore;
                         splitValue = instances[i].Values[featureIndex];
-                        minScoreFeature = feature;
-                        min_gini1 = gini1;
-                        min_gini2 = gini2;
+                        minScoreFeatureIndex = featureIndex;
+                        min_gini1 = new Tuple<double, string>(gini1,@class1);
+                        min_gini2 = new Tuple<double, string>(gini2, @class2);
                     }
-
-                    //swSplit.Stop();
-                    //miliseconds.Add(swSplit.Elapsed.TotalMilliseconds);
                 }
             }
             swTotalAllSplits.Stop();
@@ -177,69 +161,60 @@ namespace RandomForestExplorer.RandomForests
 
             // Create decision item
             node.Item = new DecisionNode();
-            node.Item.SplitFeature = minScoreFeature.Name;
+            node.Item.SplitFeature = _model.Features[minScoreFeatureIndex].Name; //minScoreFeature.Name;
             node.Item.SplitValue = splitValue;
 
             // Create right and left nodes
-            var subsetLeft = instances.Where(i => i.Values[minScoreFeature.ID - 1] <= splitValue).ToList();
-            var subsetRight = instances.Where(i => i.Values[minScoreFeature.ID - 1] > splitValue).ToList();
-            node.Left = CreateNode(subsetLeft, min_gini1);
-            node.Right = CreateNode(subsetRight, min_gini2);
+            treeDepth++;
+            var subsetLeft = instances.Where(i => i.Values[minScoreFeatureIndex] <= splitValue).ToList();
+            var subsetRight = instances.Where(i => i.Values[minScoreFeatureIndex] > splitValue).ToList();
+            node.Left = CreateNode(subsetLeft, treeDepth, min_gini1);
+            node.Right = CreateNode(subsetRight, treeDepth, min_gini2);
             node.Right.Parent = node;
             node.Left.Parent = node;
 
             return node;
 
         }
-        /// <summary>
-        /// Gini score calculation, returns gini score and most dominant class.
-        /// </summary>
-        /// <param name="instances"></param>
-        /// <returns></returns>
-        private Tuple<double,string> GiniScore(Dictionary<string, int> classesCounts)
+
+        private double GiniScore(List<Instance> instances, out string @class)
         {
-            double sum = 0d;
-            double totalInst = 0;
-            foreach (string classe in classesCounts.Keys)
-            {
-                totalInst += classesCounts[classe];
-            }
-            foreach (string classe in classesCounts.Keys)
-            {
-                if (classesCounts[classe] > 0)
-                {
-                    double frefrequency = (((double)classesCounts[classe]) / totalInst);
-                    sum += frefrequency * frefrequency;
-                }
-            }
-            return new Tuple<double, string>(1-sum, classesCounts.OrderByDescending(k => k.Value).First().Key);
-        }
-        private Tuple<double, string> GiniScore(List<Instance> instances)
-        {
-            Dictionary<string, int> totalCalsses = new Dictionary<string, int>();       
-            for (int i = 0; i < instances.Count; i++)                                     
+            Dictionary<string, int> totalCalsses = new Dictionary<string, int>();
+            for (int i = 0; i < instances.Count; i++)
             {
                 if (!totalCalsses.ContainsKey(instances[i].Class))
-                {
-                    totalCalsses.Add(instances[i].Class, 1);
-                }
-                else {
-                    totalCalsses[instances[i].Class] += 1;
-                }                        
+                    totalCalsses.Add(instances[i].Class, 0);
+
+                totalCalsses[instances[i].Class]++;
             }
-            return GiniScore(totalCalsses);
+            return GiniScore(totalCalsses, out @class);
         }
-        /// <summary>
-        /// Returns random features
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<Feature> RandomizeFeatures()
+
+        private double GiniScore(Dictionary<string, int> classCounts, out string @class)
         {
-            if (_model != null && _model.Features != null)
+            var totalDataItems = classCounts.Sum(count => count.Value);
+
+            var gini = 0d;
+            foreach(var classKey in classCounts.Keys)
             {
-                return _model.Features.OrderBy(arg => Guid.NewGuid()).Take(_randomFeaturesNum);
+                if (classCounts[classKey] > 0)
+                {
+                    var Pk = (double)classCounts[classKey] / totalDataItems;
+                    var proportion = Pk * (1 - Pk);
+                    gini += proportion;
+                }
             }
-            return null;
+
+            @class = classCounts.Count == 0 ?
+                     string.Empty :
+                     classCounts.OrderByDescending(k => k.Value).First().Key;
+
+            return gini;
+        }
+
+        private List<int> RandomizeFeatures()
+        {
+            return _randomizer.Randomize(_seed, 0, _model.TotalFeatures, _numOfFeatures);
         }
     }
 }

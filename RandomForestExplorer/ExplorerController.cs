@@ -109,6 +109,7 @@ namespace RandomForestExplorer
 
             var lines = File.ReadAllLines(p_fileName);
 
+            _model.Reset();
             _model.FileName = p_fileName;
 
             bool isData = false;

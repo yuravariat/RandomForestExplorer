@@ -25,8 +25,15 @@ namespace RandomForestExplorer.Data
             Instances.CollectionChanged += (p_sender, p_args) => OnPropertyChanged("TotalInstances");
             Features = new ObservableCollection<Feature>();
             Features.CollectionChanged += (p_sender, p_args) => OnPropertyChanged("TotalFeatures");
-
             TrainingInstances = new List<Instance>();
+        }
+
+        public void Reset()
+        {
+            Classes.Clear();
+            Instances.Clear();
+            Features.Clear();
+            TrainingInstances.Clear();
         }
 
         public bool IsReady

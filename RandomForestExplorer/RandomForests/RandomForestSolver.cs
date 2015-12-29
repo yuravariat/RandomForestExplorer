@@ -24,8 +24,8 @@ namespace RandomForestExplorer.RandomForests
 
         public void Run()
         {
-            var randTreeBld = new RandomTreeBuilder2(_dataModel, _numOfFeatures, _seed);
-            randTreeBld.Build();
+            var treeBuilder = new RandomTreeBuilder(_dataModel, _numOfFeatures, _seed, _treeDepth);
+            treeBuilder.Build();
         }
 
         private int AdjustNumOfFeatures(int p_numOfFeatures)

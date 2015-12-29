@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\DataItem.cs" />
     <Compile Include="Data\Feature.cs" />
     <Compile Include="Data\DataModel.cs" />
     <Compile Include="DecisionTrees\Enums.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="DecisionTrees\ITreeNodeExtensions.cs" />
     <Compile Include="DecisionTrees\TreeNode.cs" />
     <Compile Include="RandomForests\RandomTreeBuilder.cs" />
-    <Compile Include="RandomForests\RandomTreeBuilder2.cs" />
     <EmbeddedResource Include="Explorer.resx">
       <DependentUpon>Explorer.cs</DependentUpon>
     </EmbeddedResource>
