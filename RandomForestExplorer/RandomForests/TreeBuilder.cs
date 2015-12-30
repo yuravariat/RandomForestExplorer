@@ -35,11 +35,10 @@ namespace RandomForestExplorer.RandomForests
                 tree.OutputType = TreeOutput.ClassifiedCategory;
 
                 var watch = Stopwatch.StartNew();
-                tree.RootNode = CreateNode(_model.Instances.ToList(), 0);
+                var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
                 watch.Stop();
-
+                tree.RootNode = CreateNode(clonedList, 0);
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
-
                 return tree;
             }
             return null;
