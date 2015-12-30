@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ClassificationInstance.cs" />
     <Compile Include="ControlExtensions.cs" />
     <Compile Include="Data\DataItem.cs" />
     <Compile Include="Data\Feature.cs" />
