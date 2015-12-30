@@ -29,6 +29,8 @@ namespace RandomForestExplorer.RandomForests
 
         public Action OnCompletion { get; set; }
 
+        public Action<int, int> OnProgress { get; set; }
+
         public void Run()
         {
             while(_trees.Count > 0)
@@ -57,16 +59,18 @@ namespace RandomForestExplorer.RandomForests
             {
                 var tree = await Task.Factory.StartNew(BuildTree, _source.Token);
                 _trees.Add(tree);
+
+                if (OnProgress != null)
+                    OnProgress.BeginInvoke(_trees.Count, _numOfTrees, null, null);
+
+                if (_trees.Count == _numOfTrees && OnCompletion != null)
+                {
+                    OnCompletion();
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
-            }
-
-
-            if (_trees.Count == _numOfTrees && OnCompletion != null)
-            {
-                OnCompletion();
             }
         }
 

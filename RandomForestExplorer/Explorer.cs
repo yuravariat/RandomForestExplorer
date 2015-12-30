@@ -39,6 +39,17 @@ namespace RandomForestExplorer
             Bind();
         }
 
+        public void Write(string p_text)
+        {
+            this.UIThread(() =>
+            {
+                textArea.Text = string.Format("{0}\n[{1}] {2}",
+                textArea.Text,
+                DateTime.Now.ToString("HH:mm:ss:fff"),
+                p_text);
+            });
+        }
+
         #region Bindings
         private void Bind()
         {

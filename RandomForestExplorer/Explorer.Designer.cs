@@ -47,6 +47,8 @@
             this.stopBtn = new System.Windows.Forms.Button();
             this.startBtn = new System.Windows.Forms.Button();
             this.openTrainingFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textArea = new System.Windows.Forms.RichTextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -57,10 +59,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.numOfTrees)).BeginInit();
             this.groupBox3.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Controls.Add(this.filePathLbl);
             this.groupBox1.Controls.Add(this.openFileBtn);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -373,11 +377,35 @@
             // 
             this.openTrainingFileDialog.Filter = "Weka training files|*.txt";
             // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.textArea);
+            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox6.Location = new System.Drawing.Point(0, 350);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(612, 271);
+            this.groupBox6.TabIndex = 3;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Output";
+            // 
+            // textArea
+            // 
+            this.textArea.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.textArea.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textArea.Location = new System.Drawing.Point(3, 16);
+            this.textArea.Name = "textArea";
+            this.textArea.ReadOnly = true;
+            this.textArea.Size = new System.Drawing.Size(606, 252);
+            this.textArea.TabIndex = 0;
+            this.textArea.Text = "";
+            // 
             // Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(612, 521);
+            this.ClientSize = new System.Drawing.Size(612, 621);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -397,6 +425,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox5.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -433,6 +462,8 @@
         private System.Windows.Forms.OpenFileDialog openTrainingFileDialog;
         private System.Windows.Forms.Button openTrainingFileBtn;
         private System.Windows.Forms.Label trainingFilePathLbl;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.RichTextBox textArea;
     }
 }
 

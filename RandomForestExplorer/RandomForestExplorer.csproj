@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControlExtensions.cs" />
     <Compile Include="Data\DataItem.cs" />
     <Compile Include="Data\Feature.cs" />
     <Compile Include="Data\DataModel.cs" />

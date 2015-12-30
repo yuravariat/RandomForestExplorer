@@ -37,6 +37,7 @@ namespace RandomForestExplorer
                                             1);
 
             _solver.OnCompletion = new Action(OnSolverComletion);
+            _solver.OnProgress = new Action<int, int>(OnSolverProgress);
             _solver.Run();
         }
 
@@ -50,6 +51,11 @@ namespace RandomForestExplorer
         {
             _model.IsReady = true;
             _model.InProcess = false;
+        }
+
+        private void OnSolverProgress(int count, int total)
+        {
+            _view.Write(string.Format("Training trees: {0}/{1}", count, total));
         }
 
         private void OnFileLoad(string p_fileName)
@@ -177,9 +183,12 @@ namespace RandomForestExplorer
             _view = null;
 
             if (_solver != null)
+            {
                 _solver.OnCompletion = null;
-            _solver = null;
+                _solver.OnProgress = null;
+            }
 
+            _solver = null;
             _model = null;
         }
     }
