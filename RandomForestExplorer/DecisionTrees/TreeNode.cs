@@ -86,14 +86,5 @@ namespace RandomForestExplorer.DecisionTrees
 
             return height;
         }
-
-        public SortedSet<MatrixItem> Values { get; set; }
-    }
-
-    class MatrixItem
-    {
-        public int Column { get; set; }
-        public double Value { get; set; }
-        public string Class { get; set; }
     }
 }
