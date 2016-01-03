@@ -15,6 +15,7 @@ namespace RandomForestExplorer.Data
         private string _relation;
         private bool _trainingEnabled;
         private bool _trainingFromFile;
+        private DecisionTrees.TreeOutput dataType;
 
         public DataModel()
         {
@@ -92,6 +93,11 @@ namespace RandomForestExplorer.Data
         public int TotalFeatures
         {
             get { return Features.Count; }
+        }
+        public DecisionTrees.TreeOutput DataType
+        {
+            get { return dataType; }
+            set { dataType = value;}
         }
 
         public ObservableCollection<string> Classes { get; set; }
