@@ -29,6 +29,10 @@ namespace RandomForestExplorer
             _model.IsReady = false;
             _model.InProcess = true;
 
+            _view.ProgressBar.Value = 0;
+            _view.ProgressBar.Minimum = 0;
+            _view.ProgressBar.Maximum = _view.NumberOfTrees;
+
             BuildTrainingData();
             _solver = new RandomForestSolver(_model,
                                             _view.NumberOfTrees, 
@@ -36,26 +40,28 @@ namespace RandomForestExplorer
                                             _view.TreeDepth,
                                             1);
 
-            _solver.OnCompletion = new Action(OnSolverComletion);
-            _solver.OnProgress = new Action<int, int>(OnSolverProgress);
+            _solver.OnCompletion = new Action<int>(OnSolverComletion);
+            _solver.OnProgress = new Action(OnSolverProgress);
             _solver.Run();
         }
 
         private void OnStop()
         {
             _solver.Cancel();
-            OnSolverComletion();
+            OnSolverComletion(0);
         }
 
-        private void OnSolverComletion()
+        private void OnSolverComletion(int totalTrees)
         {
             _model.IsReady = true;
             _model.InProcess = false;
+
+            _view.Write("Complete Random-Forest trees generation. Total trees built: " + totalTrees);
         }
 
-        private void OnSolverProgress(int count, int total)
+        private void OnSolverProgress()
         {
-            _view.Write(string.Format("Training trees: {0}/{1}", count, total));
+            _view.ProgressBar.Increment(1);
         }
 
         private void OnFileLoad(string p_fileName)

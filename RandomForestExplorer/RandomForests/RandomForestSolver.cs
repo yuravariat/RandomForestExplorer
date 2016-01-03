@@ -3,6 +3,7 @@ using RandomForestExplorer.Data;
 using System.Threading.Tasks;
 using System.Threading;
 using RandomForestExplorer.DecisionTrees;
+using System.Text;
 
 namespace RandomForestExplorer.RandomForests
 {
@@ -31,9 +32,9 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Public Methods
-        public Action OnCompletion { get; set; }
+        public Action<int> OnCompletion { get; set; }
 
-        public Action<int, int> OnProgress { get; set; }
+        public Action OnProgress { get; set; }
 
         public void Run()
         {
@@ -65,13 +66,63 @@ namespace RandomForestExplorer.RandomForests
                 _forest.Trees.Add(tree);
 
                 if (OnProgress != null)
-                    OnProgress.BeginInvoke(_forest.Trees.Count, _numOfTrees, null, null);
+                    OnProgress();
 
                 if (_forest.Trees.Count == _numOfTrees && OnCompletion != null)
                 {
-                    OnCompletion();
+                    OnCompletion(_forest.Trees.Count);
 
-                    var result = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+                    var instances = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+
+                    //for each class create a vector of n classes
+                    /*
+                            1 2 3 ... n
+                        1   
+                        2
+                        3
+                        ...
+                        n
+                    */
+
+                    /*
+                                === Confusion Matrix ===
+
+                                a   b   c   <-- classified as
+                                324  21   0 |   a = 0
+                                44 290  18 |   b = 1
+                                0  16 307 |   c = 2
+                    */
+
+                    var horizontalStringBuilder = new StringBuilder("\t\t");
+                    var verticalStringBuilder = new StringBuilder("\n\n");
+                    foreach (var @class in _dataModel.Classes)
+                    {
+                        horizontalStringBuilder.AppendFormat("{0}\t", @class);
+                    }
+
+                    double[,] confusionMatrix = new double[ _dataModel.Classes.Count, _dataModel.Classes.Count ];
+                    foreach(var entry in instances)
+                    {
+                        //foreach(var voteEntry in instVal.ClassVotes)
+                        {
+                            //vertical
+                            var orignalClass = int.Parse(entry.Key.Class);
+                            var votedClass = int.Parse(entry.Value);
+                            //horizontal
+                            confusionMatrix[orignalClass, votedClass] += 1;
+
+                        }
+                    }
+
+
+                    //var matrix = new SortedDictionary<string, List<double>>();
+
+
+
+                    //Matrix < double > m = Matrix<double>.Build.
+
+
+
                 }
             }
             catch (Exception ex)

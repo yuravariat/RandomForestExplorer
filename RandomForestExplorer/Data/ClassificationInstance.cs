@@ -15,6 +15,7 @@ namespace RandomForestExplorer.Data
         public ConcurrentDictionary<string,int> ClassVotes { get; set; }
         public string Class { get; private set; }
         public double Value { get; private set; }
+        public int InstanceIndex { get; private set; }
 
         public InstanceValue(string @class, double value, IEnumerable<string> classes)
         {
