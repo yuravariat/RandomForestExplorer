@@ -1,21 +1,24 @@
 ﻿using System;
 using RandomForestExplorer.Data;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Threading;
+using RandomForestExplorer.DecisionTrees;
 
 namespace RandomForestExplorer.RandomForests
 {
     public class RandomForestSolver : IDisposable
     {
+        #region Private Members
         private DataModel _dataModel;
         private readonly int _numOfTrees;
         private readonly int _numOfFeatures;
         private int _treeDepth;
         private readonly int _seed;
-        private ConcurrentBag<DecisionTrees.DecisionTree> _trees;
+        private RandomForest _forest;
         private CancellationTokenSource _source;
+        #endregion
 
+        #region Constructor
         public RandomForestSolver(DataModel p_dataModel, int p_numOfTrees, int p_numOfFeatures, int p_treeDepth, int p_seed)
         {
             _dataModel = p_dataModel;
@@ -23,24 +26,18 @@ namespace RandomForestExplorer.RandomForests
             _numOfFeatures = AdjustNumOfFeatures(p_numOfFeatures);
             _treeDepth = AdjustTreeDepth(p_treeDepth);
             _seed = p_seed;
-            _trees = new ConcurrentBag<DecisionTrees.DecisionTree>();
             _source = new CancellationTokenSource();
         }
+        #endregion
 
+        #region Public Methods
         public Action OnCompletion { get; set; }
 
         public Action<int, int> OnProgress { get; set; }
 
         public void Run()
         {
-            while(_trees.Count > 0)
-            {
-                DecisionTrees.DecisionTree tree;
-                if (_trees.TryTake(out tree))
-                {
-                    tree = null;
-                }
-            }
+            _forest = new RandomForest();
 
             for(var i=0; i < _numOfTrees; i++)
             {
@@ -53,19 +50,28 @@ namespace RandomForestExplorer.RandomForests
             _source.Cancel();
         }
 
+        public void Dispose()
+        {
+            _dataModel = null;
+        }
+        #endregion
+
+        #region Private Members
         private async void RunAsync()
         {
             try
             {
                 var tree = await Task.Factory.StartNew(BuildTree, _source.Token);
-                _trees.Add(tree);
+                _forest.Trees.Add(tree);
 
                 if (OnProgress != null)
-                    OnProgress.BeginInvoke(_trees.Count, _numOfTrees, null, null);
+                    OnProgress.BeginInvoke(_forest.Trees.Count, _numOfTrees, null, null);
 
-                if (_trees.Count == _numOfTrees && OnCompletion != null)
+                if (_forest.Trees.Count == _numOfTrees && OnCompletion != null)
                 {
                     OnCompletion();
+
+                    var result = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
                 }
             }
             catch (Exception ex)
@@ -74,7 +80,7 @@ namespace RandomForestExplorer.RandomForests
             }
         }
 
-        private DecisionTrees.DecisionTree BuildTree()
+        private DecisionTree BuildTree()
         {
             return new TreeBuilder(_dataModel, _numOfFeatures, _seed, _treeDepth).Build();
         }
@@ -94,10 +100,6 @@ namespace RandomForestExplorer.RandomForests
 
             return treeDepth;
         }
-
-        public void Dispose()
-        {
-            _dataModel = null;
-        }
+        #endregion
     }
 }
