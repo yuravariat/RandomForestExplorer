@@ -281,7 +281,7 @@ namespace RandomForestExplorer.RandomForests
                         minVarLeft = varianceSub1;
                         minVarRight = varianceSub2;
                         minMeanLeft = meanSub1;
-                        minMeanRight = meanSub1;
+                        minMeanRight = meanSub2;
                     }
                 }
             }
