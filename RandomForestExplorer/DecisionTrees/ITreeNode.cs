@@ -28,5 +28,10 @@ namespace RandomForestExplorer.DecisionTrees
         /// The item being adapted.
         /// </summary>
         T Item { get; }
+
+        bool IsLeaf { get; }
+
+        ITreeNode<T> Right { get; set; }
+        ITreeNode<T> Left { get; set; }
     }
 }

@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RandomForestExplorer.DecisionTrees;
 using RandomForestExplorer.Data;
-using System.Collections;
 using System.Diagnostics;
 
 namespace RandomForestExplorer.RandomForests
 {
     class TreeBuilder
     {
+        #region Members
         private DataModel _model;
         private Randomizer _randomizer;
         private int _seed;
         private int _treeDepth;
         private int _numOfFeatures;
+        #endregion
 
+        #region Constructor
         public TreeBuilder(DataModel model, int numOfFeatures, int seed, int depth)
         {
             _model = model;
@@ -26,7 +26,9 @@ namespace RandomForestExplorer.RandomForests
             _numOfFeatures = numOfFeatures;
             _randomizer = new Randomizer();
         }
+        #endregion
 
+        #region Public Methods
         public DecisionTree Build()
         {
             if (_model != null && _model.Features.Count > 0)
@@ -43,7 +45,9 @@ namespace RandomForestExplorer.RandomForests
             }
             return null;
         }
+        #endregion
 
+        #region Private Members
         /// <summary>
         /// Splits one node into two groups or stops with  leaf (Clacification decision)
         /// </summary>
@@ -66,7 +70,7 @@ namespace RandomForestExplorer.RandomForests
             // Gini score of the group is 0, the group is pure. or there is too few instances 
             if (giniPrevScore.Item1==0 || instances.Count <= 20 || treeDepth == _treeDepth)
             {
-                node.Item.Clacification = giniPrevScore.Item2;
+                node.Item.Classification = giniPrevScore.Item2;
                 return node;
             }
 
@@ -154,13 +158,13 @@ namespace RandomForestExplorer.RandomForests
             // Yura: not sure about this
             if (minScore >= giniPrevScore.Item1)
             {
-                node.Item.Clacification = giniPrevScore.Item2;
+                node.Item.Classification = giniPrevScore.Item2;
                 return node;
             }
 
             // Create decision item
             node.Item = new DecisionNode();
-            node.Item.SplitFeature = _model.Features[minScoreFeatureIndex].Name; //minScoreFeature.Name;
+            node.Item.SplitFeatureIndex = minScoreFeatureIndex;
             node.Item.SplitValue = splitValue;
 
             // Create right and left nodes
@@ -215,5 +219,6 @@ namespace RandomForestExplorer.RandomForests
         {
             return _randomizer.Randomize(_seed, 0, _model.TotalFeatures, _numOfFeatures);
         }
+        #endregion
     }
 }

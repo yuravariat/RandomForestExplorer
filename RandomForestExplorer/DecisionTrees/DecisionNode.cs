@@ -14,7 +14,7 @@ namespace RandomForestExplorer.DecisionTrees
         /// <summary>
         /// Feature/Column on which split will be applied.
         /// </summary>
-        public string SplitFeature;
+        public int SplitFeatureIndex;
         /// <summary>
         /// Split value that splits the data into two groups. 
         /// x > value and x < value.
@@ -26,7 +26,7 @@ namespace RandomForestExplorer.DecisionTrees
         /// <summary>
         /// Class/Category
         /// </summary>
-        public string Clacification;
+        public string Classification;
         /// <summary>
         /// Predicted numeric value
         /// </summary>
