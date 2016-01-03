@@ -30,6 +30,6 @@ namespace RandomForestExplorer.DecisionTrees
         /// <summary>
         /// Predicted numeric value
         /// </summary>
-        public decimal PredictedValue;
+        public double PredictedValue;
     }
 }
