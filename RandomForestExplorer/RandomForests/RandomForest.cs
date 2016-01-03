@@ -2,6 +2,9 @@
 using RandomForestExplorer.DecisionTrees;
 using RandomForestExplorer.Data;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Collections.ObjectModel;
 
 namespace RandomForestExplorer.RandomForests
 {
@@ -14,30 +17,70 @@ namespace RandomForestExplorer.RandomForests
             Trees = new ConcurrentBag<DecisionTree>();
         }
 
-        public ConcurrentBag<InstanceValue> Evaluate(IEnumerable<Instance> instances, IEnumerable<string> classes)
+        public Dictionary<Instance, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
         {
-            var bagOfValues = new ConcurrentBag<InstanceValue>();
+            Dictionary<Instance, List<InstanceValue>> instanceData = new Dictionary<Instance, List<InstanceValue>>();
 
-            foreach(var instance in instances)
-            {               
-                foreach(var value in instance.Values)
+            for (var i=0; i < instances.Count; i++)
+            {
+                instanceData.Add(instances[i], new List<InstanceValue>());
+                foreach (var value in instances[i].Values)
                 {
-                    bagOfValues.Add(new InstanceValue(instance.Class, value, classes));
+                    instanceData[instances[i]].Add(new InstanceValue(instances[i].Class, value, classes));
                 }
             }
 
-            EvaluateTrees(bagOfValues);
+            //evaluate internal instance values
+            EvaluateTrees(instanceData);
 
-            return bagOfValues;
+            var result = new Dictionary<Instance, string>();
+            //summarize all values per instance
+            foreach(var entry in instanceData)
+            {
+                //initialize counters
+                var instanceClassCounters = new Dictionary<string, int>();
+                foreach (var @class in classes)
+                {
+                    instanceClassCounters.Add(@class, 0);
+                }
+
+                //aggregate counts from instance values
+                foreach(var instVal in entry.Value)
+                {
+                    foreach(var vote in instVal.ClassVotes)
+                    {
+                        instanceClassCounters[vote.Key] += vote.Value;
+                    }
+                }
+
+                //decision
+                var mostVoted = 0;
+                var mostVotedClass = string.Empty;
+                foreach(var counter in instanceClassCounters)
+                {
+                    if (counter.Value > mostVoted)
+                    {
+                        mostVoted = counter.Value;
+                        mostVotedClass = counter.Key;
+                    }
+                }
+
+                result.Add(entry.Key, mostVotedClass);
+            }
+
+            return result;
         }
 
-        public void EvaluateTrees(ConcurrentBag<InstanceValue> bagOfValues)
+        public void EvaluateTrees(Dictionary<Instance,List<InstanceValue>> instanceData)
         {
             foreach(var tree in Trees)
             {
-                foreach(var instVal in bagOfValues)
+                foreach(var instanceEntry in instanceData)
                 {
-                    Classify(tree.RootNode, instVal);
+                    foreach(var instVal in instanceEntry.Value)
+                    {
+                        Classify(tree.RootNode, instVal);
+                    }
                 }
             }
         }

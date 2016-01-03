@@ -49,6 +49,7 @@
             this.openTrainingFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textArea = new System.Windows.Forms.RichTextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -344,6 +345,7 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.progressBar);
             this.groupBox5.Controls.Add(this.stopBtn);
             this.groupBox5.Controls.Add(this.startBtn);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
@@ -355,9 +357,10 @@
             // 
             // stopBtn
             // 
-            this.stopBtn.Location = new System.Drawing.Point(96, 14);
+            this.stopBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.stopBtn.Location = new System.Drawing.Point(78, 16);
             this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(75, 23);
+            this.stopBtn.Size = new System.Drawing.Size(75, 27);
             this.stopBtn.TabIndex = 2;
             this.stopBtn.Text = "Stop";
             this.stopBtn.UseVisualStyleBackColor = true;
@@ -365,9 +368,10 @@
             // 
             // startBtn
             // 
-            this.startBtn.Location = new System.Drawing.Point(12, 14);
+            this.startBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.startBtn.Location = new System.Drawing.Point(3, 16);
             this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(75, 23);
+            this.startBtn.Size = new System.Drawing.Size(75, 27);
             this.startBtn.TabIndex = 1;
             this.startBtn.Text = "Start";
             this.startBtn.UseVisualStyleBackColor = true;
@@ -399,6 +403,16 @@
             this.textArea.Size = new System.Drawing.Size(606, 252);
             this.textArea.TabIndex = 0;
             this.textArea.Text = "";
+            // 
+            // progressBar
+            // 
+            this.progressBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBar.Location = new System.Drawing.Point(153, 16);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(456, 27);
+            this.progressBar.Step = 5;
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar.TabIndex = 3;
             // 
             // Explorer
             // 
@@ -464,6 +478,7 @@
         private System.Windows.Forms.Label trainingFilePathLbl;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.RichTextBox textArea;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }
 

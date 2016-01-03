@@ -32,6 +32,11 @@ namespace RandomForestExplorer
             get { return (float)percentSplit.Value; }
         }
 
+        public ProgressBar ProgressBar
+        {
+            get { return progressBar; }
+        }
+
         public Explorer(DataModel p_model)
         {
             InitializeComponent();
