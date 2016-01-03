@@ -124,6 +124,7 @@ namespace RandomForestExplorer
             const string attributeTag = "@attribute";
             const string dataTag = "@data";
             const string classTag = "class";
+            const string attrTag = "attr";
 
             var lines = File.ReadAllLines(p_fileName);
 
@@ -140,7 +141,15 @@ namespace RandomForestExplorer
 
                 if (isData)
                 {
-                    var instance = new Instance { Class = segments.Last() };
+                    Instance instance = null;
+                    if(_model.DataType == DecisionTrees.TreeOutput.ClassifiedCategory)
+                    {
+                        instance = new Instance { Class = segments.Last() };
+                    }
+                    else
+                    {
+                        instance = new Instance { Number = double.Parse(segments.Last()) };
+                    }
                     for (var i = 0; i < segments.Length - 1; i++)
                     {
                         instance.Values.Add(double.Parse(segments[i]));
@@ -157,14 +166,19 @@ namespace RandomForestExplorer
                     case attributeTag:
                         if (segments[1] == classTag)
                         {
+                            _model.DataType = DecisionTrees.TreeOutput.ClassifiedCategory;
                             var classes = segments[2].Replace("{", "").Replace("}", "").Split(new[] {','});
                             foreach (var @class in classes)
                             {
                                 _model.Classes.Add(@class);
                             }
                         }
-                        else
+                        else if (segments[1] == attrTag)
                         {
+                            _model.DataType = DecisionTrees.TreeOutput.Regression;
+                        }
+                        else
+                        {                            
                             _model.Features.Add(new Feature
                             {
                                 ID = attrCounter++,

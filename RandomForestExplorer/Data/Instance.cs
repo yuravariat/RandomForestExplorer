@@ -11,6 +11,7 @@ namespace RandomForestExplorer.Data
         }
 
         public string Class { get; set; }
+        public double Number { get; set; }
         public List<double> Values { get; set; }
 
         public Instance Clone()

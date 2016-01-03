@@ -15,6 +15,8 @@ namespace RandomForestExplorer.RandomForests
         private int _seed;
         private int _treeDepth;
         private int _numOfFeatures;
+        private int _minimumInastancesInNode;
+        private double _minVariance;
         #endregion
 
         #region Constructor
@@ -34,12 +36,22 @@ namespace RandomForestExplorer.RandomForests
             if (_model != null && _model.Features.Count > 0)
             {
                 DecisionTree tree = new DecisionTree();
-                tree.OutputType = TreeOutput.ClassifiedCategory;
+                tree.OutputType = _model.DataType;
+                _minimumInastancesInNode = (int)(_model.Instances.Count * 0.05); // 5% of the data.
 
                 var watch = Stopwatch.StartNew();
                 var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
                 watch.Stop();
-                tree.RootNode = CreateNode(clonedList, 0);
+                if (tree.OutputType == TreeOutput.ClassifiedCategory)
+                {
+                    tree.RootNode = CreateNode(clonedList, 0);
+                }
+                else
+                {
+                    double totalVariance = Variance(clonedList);
+                    _minVariance = (int)(_model.Instances.Count * 0.05); // 5% of the variance.
+                    tree.RootNode = CreateNodeRegresion(clonedList, 0, totalVariance);
+                }
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
                 return tree;
             }
@@ -68,7 +80,7 @@ namespace RandomForestExplorer.RandomForests
             }
 
             // Gini score of the group is 0, the group is pure. or there is too few instances 
-            if (giniPrevScore.Item1==0 || instances.Count <= 20 || treeDepth == _treeDepth)
+            if (giniPrevScore.Item1==0 || instances.Count <= _minimumInastancesInNode || treeDepth == _treeDepth)
             {
                 node.Item.Classification = giniPrevScore.Item2;
                 return node;
@@ -83,11 +95,11 @@ namespace RandomForestExplorer.RandomForests
             int minScoreFeatureIndex = -1;
 
             //Metric
-            Stopwatch swTotalAllSplits = new Stopwatch();
+            //Stopwatch swTotalAllSplits = new Stopwatch();
             //Stopwatch swSplit = new Stopwatch();
             //List<double> miliseconds = new List<double>(instances.Count);
 
-            swTotalAllSplits.Start();
+            //swTotalAllSplits.Start();
 
             // Classes counters
             Dictionary<string, int> totalCalssesS1 = new Dictionary<string, int>();       
@@ -123,8 +135,8 @@ namespace RandomForestExplorer.RandomForests
                     // Update counters
                     totalCalssesS1[instances[i].Class] += 1;                                 
                     totalCalssesS2[instances[i].Class] -= 1;                                 
-                    totalSubset1 += 1;                                                        
-                    totalSubset2 -= 1;                                                        
+                    totalSubset1 ++;                                                        
+                    totalSubset2 --;                                                        
 
                     // if next value has the same value dont calculate gini split is not finished.
                     if (i < (instances.Count-1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
@@ -151,8 +163,8 @@ namespace RandomForestExplorer.RandomForests
                     }
                 }
             }
-            swTotalAllSplits.Stop();
-            double totalMilisecondsAllSplits = swTotalAllSplits.Elapsed.TotalMilliseconds;
+            //swTotalAllSplits.Stop();
+            //double totalMilisecondsAllSplits = swTotalAllSplits.Elapsed.TotalMilliseconds;
 
             // There is no improvment no need to split.
             // Yura: not sure about this
@@ -173,6 +185,128 @@ namespace RandomForestExplorer.RandomForests
             var subsetRight = instances.Where(i => i.Values[minScoreFeatureIndex] > splitValue).ToList();
             node.Left = CreateNode(subsetLeft, treeDepth, min_gini1);
             node.Right = CreateNode(subsetRight, treeDepth, min_gini2);
+            node.Right.Parent = node;
+            node.Left.Parent = node;
+
+            return node;
+
+        }
+
+        private TreeNode CreateNodeRegresion(List<Instance> instances, int treeDepth, double? variancePrevScore = null, double? prevMean = null)
+        {
+            TreeNode node = new TreeNode();
+            node.Item = new DecisionNode();
+
+            // stop condition
+            if (!variancePrevScore.HasValue)
+            {
+                variancePrevScore = Variance(instances);
+            }
+
+            // Variance of the subset is less then minimum or there is too few instances 
+            if (variancePrevScore <= _minVariance || instances.Count <= _minimumInastancesInNode || treeDepth == _treeDepth)
+            {
+                node.Item.PredictedValue = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                return node;
+            }
+
+            // get random features
+            var featureIndexes = RandomizeFeatures();
+
+
+            double minVar = Double.MaxValue;
+            double minVarLeft = 0, minVarRight = 0;
+            double minMeanLeft = 0, minMeanRight = 0;
+            double splitValue = 0;
+            int minScoreFeatureIndex = -1;
+
+            //Metric
+            //Stopwatch swTotalAllSplits = new Stopwatch();
+            //Stopwatch swSplit = new Stopwatch();
+            //List<double> miliseconds = new List<double>(instances.Count);
+
+            //swTotalAllSplits.Start();
+
+            // Counters
+            int totalSubsetCount1, totalSubsetCount2;
+            double totalSub1 = 0, totalSub2 = 0;
+            double meanSub1 = 0, meanSub2 = 0;
+            double varianceSub1 = 0, varianceSub2 = 0;
+            double squearSumSub1 = 0, squearSumSub2 = 0;
+
+
+            // Loop thought all feature and all values.
+            foreach (var featureIndex in featureIndexes)
+            {
+                instances.Sort((a, b) => a.Values[featureIndex].CompareTo(b.Values[featureIndex]));
+
+                // Reset counters
+                totalSubsetCount1 = 0;
+                totalSubsetCount2 = instances.Count;
+                meanSub1 = 0;
+                meanSub2 = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                varianceSub1 = 0;
+                varianceSub2 = variancePrevScore.HasValue ? variancePrevScore.Value : Variance(instances);
+                squearSumSub1 = 0;
+                squearSumSub2 = varianceSub2 * totalSubsetCount2;
+
+                for (int i = 0; i < instances.Count; i++)
+                {
+                    // Update counters
+                    totalSubsetCount1 ++;
+                    totalSubsetCount2 --;
+                    totalSub1 += instances[i].Number;
+                    totalSub2 -= instances[i].Number;
+                    meanSub1 = totalSub1 / totalSubsetCount1;
+                    meanSub2 = totalSub2 / totalSubsetCount2;
+                    squearSumSub1 += Math.Pow((instances[i].Number - meanSub1), 2);
+                    squearSumSub2 -= Math.Pow((instances[i].Number - meanSub2), 2);
+                    varianceSub1 = squearSumSub1 / totalSubsetCount1;
+                    varianceSub2 = squearSumSub2 / totalSubsetCount2;
+
+                    // if next value has the same value dont calculate gini split is not finished.
+                    if (i < (instances.Count - 1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
+                    {
+                        continue;
+                    }
+
+                    //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
+                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) + varianceSub2 * ((double)totalSubsetCount1 / (double)instances.Count);
+
+                    if (totalScore < minVar)
+                    {
+                        minVar = totalScore;
+                        splitValue = instances[i].Values[featureIndex];
+                        minScoreFeatureIndex = featureIndex;
+                        minVarLeft = varianceSub1;
+                        minVarRight = varianceSub2;
+                        minMeanLeft = meanSub1;
+                        minMeanRight = meanSub1;
+                    }
+                }
+            }
+            //swTotalAllSplits.Stop();
+            //double totalMilisecondsAllSplits = swTotalAllSplits.Elapsed.TotalMilliseconds;
+
+            // There is no improvment no need to split.
+            // Yura: not sure about this
+            if (minVar >= variancePrevScore.Value)
+            {
+                node.Item.PredictedValue = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                return node;
+            }
+
+            // Create decision item
+            node.Item = new DecisionNode();
+            node.Item.SplitFeatureIndex = minScoreFeatureIndex;
+            node.Item.SplitValue = splitValue;
+
+            // Create right and left nodes
+            treeDepth++;
+            var subsetLeft = instances.Where(i => i.Values[minScoreFeatureIndex] <= splitValue).ToList();
+            var subsetRight = instances.Where(i => i.Values[minScoreFeatureIndex] > splitValue).ToList();
+            node.Left = CreateNodeRegresion(subsetLeft, treeDepth, minVarLeft, minMeanLeft);
+            node.Right = CreateNodeRegresion(subsetRight, treeDepth, minVarRight, minMeanRight);
             node.Right.Parent = node;
             node.Left.Parent = node;
 
@@ -213,6 +347,34 @@ namespace RandomForestExplorer.RandomForests
                      classCounts.OrderByDescending(k => k.Value).First().Key;
 
             return gini;
+        }
+
+        private double Variance(List<Instance> instances)
+        {
+            double mean = 0;
+            for (int i = 0; i < instances.Count; i++)
+            {
+                mean += instances[i].Number;
+            }
+            mean = mean / (double)instances.Count;
+
+            double variance = 0;
+            for (int i = 0; i < instances.Count; i++)
+            {
+                variance += Math.Pow((instances[i].Number - mean), 2);
+            }
+            variance = variance / (double)instances.Count;
+
+            return variance;
+        }
+        private double Mean(List<Instance> instances)
+        {
+            double mean = 0;
+            for (int i = 0; i < instances.Count; i++)
+            {
+                mean += instances[i].Number;
+            }
+            return mean / (double)instances.Count;
         }
 
         private List<int> RandomizeFeatures()
