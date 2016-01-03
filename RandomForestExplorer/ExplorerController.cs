@@ -135,7 +135,15 @@ namespace RandomForestExplorer
 
                 if (isData)
                 {
-                    var instance = new Instance { Class = segments.Last() };
+                    Instance instance = null;
+                    if(_model.DataType == DecisionTrees.TreeOutput.ClassifiedCategory)
+                    {
+                        instance = new Instance { Class = segments.Last() };
+                    }
+                    else
+                    {
+                        instance = new Instance { Number = double.Parse(segments.Last()) };
+                    }
                     for (var i = 0; i < segments.Length - 1; i++)
                     {
                         instance.Values.Add(double.Parse(segments[i]));
