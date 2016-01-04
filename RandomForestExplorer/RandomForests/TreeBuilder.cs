@@ -151,7 +151,8 @@ namespace RandomForestExplorer.RandomForests
                     var gini2 = GiniScore(totalCalssesS2, out @class2);    
                     
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    var totalScore = gini1 * ((double)totalSubset1 / (double)instances.Count)  +  gini2 * ((double)totalSubset2 / (double)instances.Count);                               
+                    var totalScore = gini1 * ((double)totalSubset1 / (double)instances.Count)  +
+                                     gini2 * ((double)totalSubset2 / (double)instances.Count);                               
 
                     if (totalScore < minScore)
                     {
@@ -271,7 +272,8 @@ namespace RandomForestExplorer.RandomForests
                     }
 
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) + varianceSub2 * ((double)totalSubsetCount1 / (double)instances.Count);
+                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) + 
+                                     varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
 
                     if (totalScore < minVar)
                     {
@@ -281,7 +283,7 @@ namespace RandomForestExplorer.RandomForests
                         minVarLeft = varianceSub1;
                         minVarRight = varianceSub2;
                         minMeanLeft = meanSub1;
-                        minMeanRight = meanSub1;
+                        minMeanRight = meanSub2;
                     }
                 }
             }
