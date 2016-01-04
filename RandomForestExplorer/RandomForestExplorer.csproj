@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\ClassificationInstance.cs" />
+    <Compile Include="Data\InstanceValue.cs" />
     <Compile Include="ControlExtensions.cs" />
     <Compile Include="Data\Feature.cs" />
     <Compile Include="Data\DataModel.cs" />
