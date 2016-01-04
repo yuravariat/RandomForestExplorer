@@ -112,6 +112,7 @@ namespace RandomForestExplorer
             _model.TrainingEnabled = true;
             _model.TrainingFromFile = true;
             _model.IsReady = true;
+            OnTrainingFileLoad(Path.ChangeExtension(p_fileName, "txt"));
         }
 
         private void OnTrainingFileLoad(string p_fileName)
@@ -141,22 +142,30 @@ namespace RandomForestExplorer
                                                          System.Windows.Forms.MessageBoxIcon.Error);
                     return false;
                 }
-                else
+              
+                if (!Path.GetFileNameWithoutExtension(_model.FileName).Equals(Path.GetFileNameWithoutExtension(_model.TrainingFileName)))
                 {
-                    var lines = File.ReadAllLines(_model.TrainingFileName);
-                    foreach (var line in lines.Skip(1))
-                    {
-                        var segments = line.TrimEnd().Split(new[] { ' ' });
-                        if (segments.Length == 0)
-                            continue;
+                    System.Windows.Forms.MessageBox.Show(_view,
+                                     "The data and training files do not match.",
+                                     "Error",
+                                     System.Windows.Forms.MessageBoxButtons.OK,
+                                     System.Windows.Forms.MessageBoxIcon.Error);
+                    return false;
+                }
+               
+                var lines = File.ReadAllLines(_model.TrainingFileName);
+                foreach (var line in lines.Skip(1))
+                {
+                    var segments = line.TrimEnd().Split(new[] { ' ' });
+                    if (segments.Length == 0)
+                        continue;
 
-                        var instance = new Instance { Class = segments.Last() };
-                        for (var i = 0; i < segments.Length - 1; i++)
-                        {
-                            instance.Values.Add(double.Parse(segments[i]));
-                        }
-                        _model.TrainingInstances.Add(instance);
+                    var instance = new Instance { Class = segments.Last() };
+                    for (var i = 0; i < segments.Length - 1; i++)
+                    {
+                        instance.Values.Add(double.Parse(segments[i]));
                     }
+                    _model.TrainingInstances.Add(instance);
                 }
             }
 
