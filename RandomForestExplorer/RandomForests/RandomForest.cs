@@ -25,13 +25,15 @@ namespace RandomForestExplorer.RandomForests
                 //initialize instance entry with an empty list
                 instanceData.Add(instanceIndex, new List<InstanceValue>());
 
+                instanceData[instanceIndex].Add(new InstanceValue(instances[instanceIndex].Class, instances[instanceIndex].Values, classes));
+
                 //fill the  instance values list
-                for (var valueIndex = 0; valueIndex < instances[instanceIndex].Values.Count; valueIndex++)
-                {
-                    //valueIndex is also a feature index and we need it to match the split feature on the tree node
-                    var value = instances[instanceIndex].Values[valueIndex];
-                    instanceData[instanceIndex].Add(new InstanceValue(valueIndex, instances[instanceIndex].Class, value, classes));
-                }
+                //for (var valueIndex = 0; valueIndex < instances[instanceIndex].Values.Count; valueIndex++)
+                //{
+                //    //valueIndex is also a feature index and we need it to match the split feature on the tree node
+                //    var value = instances[instanceIndex].Values[valueIndex];
+                //    instanceData[instanceIndex].Add(new InstanceValue(valueIndex, instances[instanceIndex].Class, value, classes));
+                //}
             }
 
             //########### Evaluate ############
@@ -99,13 +101,12 @@ namespace RandomForestExplorer.RandomForests
             //if reached the leaf node or the split value equals to the current value, stop the evaluation and vote for the appropriate class
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
             {
-                if (node.Item.SplitFeatureIndex==instanceValue.FeatureIndex)
-                    instanceValue.ClassVotes[node.Item.Classification]++;
+                instanceValue.ClassVotes[node.Item.Classification]++;
                 return;
             }
 
             //go left
-            if (node.Item.SplitValue.CompareTo(instanceValue.Value) >= 0)
+            if (node.Item.SplitValue.CompareTo(instanceValue.Values[node.Item.SplitFeatureIndex]) >= 0)
             {
                 EvaluateNode(node.Left, instanceValue);
             }
