@@ -26,9 +26,11 @@ namespace RandomForestExplorer.RandomForests
                 instanceData.Add(instanceIndex, new List<InstanceValue>());
 
                 //fill the  instance values list
-                foreach (var value in instances[instanceIndex].Values)
+                for (var valueIndex = 0; valueIndex < instances[instanceIndex].Values.Count; valueIndex++)
                 {
-                    instanceData[instanceIndex].Add(new InstanceValue(instances[instanceIndex].Class, value, classes));
+                    //valueIndex is also a feature index and we need it to match the split feature on the tree node
+                    var value = instances[instanceIndex].Values[valueIndex];
+                    instanceData[instanceIndex].Add(new InstanceValue(valueIndex, instances[instanceIndex].Class, value, classes));
                 }
             }
 
@@ -71,13 +73,7 @@ namespace RandomForestExplorer.RandomForests
                         mostVoted = votes;
                         mostVotedClass = votedClass;
                     }
-                    else
-                    {
-                        //if (votes == mostVoted && votes > 0)
-                        //    mostVotedClass = instances[entry.Key].Class;
-                    }
                 }
-
                 result.Add(entry.Key, mostVotedClass);
             }
 
@@ -103,7 +99,8 @@ namespace RandomForestExplorer.RandomForests
             //if reached the leaf node or the split value equals to the current value, stop the evaluation and vote for the appropriate class
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
             {
-                instanceValue.ClassVotes[node.Item.Classification]++;
+                if (node.Item.SplitFeatureIndex==instanceValue.FeatureIndex)
+                    instanceValue.ClassVotes[node.Item.Classification]++;
                 return;
             }
 

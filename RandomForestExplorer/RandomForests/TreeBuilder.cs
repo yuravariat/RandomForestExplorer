@@ -11,7 +11,8 @@ namespace RandomForestExplorer.RandomForests
     {
         #region Members
         private DataModel _model;
-        private Randomizer _randomizer;
+        private Random _random;
+        //private Randomizer _randomizer;
         private int _seed;
         private int _treeDepth;
         private int _numOfFeatures;
@@ -26,7 +27,8 @@ namespace RandomForestExplorer.RandomForests
             _seed = seed;
             _treeDepth = depth;
             _numOfFeatures = numOfFeatures;
-            _randomizer = new Randomizer();
+            //_randomizer = new Randomizer();
+            _random = new Random(_seed);
         }
         #endregion
 
@@ -379,19 +381,18 @@ namespace RandomForestExplorer.RandomForests
             return mean / (double)instances.Count;
         }
 
-        private List<int> RandomizeFeatures()
+        private HashSet<int> RandomizeFeatures()
         {
-            var random = new Random(_seed);
-            var items = new List<int>(_numOfFeatures);
+            var featureIndexes = new HashSet<int>();
 
-            while (items.Count < _numOfFeatures)
+            while (featureIndexes.Count < _numOfFeatures)
             {
-                items.Add(random.Next(0, _model.TotalFeatures));
+                var featureIndex = _random.Next(0, _model.TotalFeatures);
+                if (!featureIndexes.Contains(featureIndex))
+                    featureIndexes.Add(featureIndex);
             }
 
-            //return items.Distinct().ToList();
-            return items.ToList();
-            //return _randomizer.Randomize(_seed, 0, _model.TotalFeatures, _numOfFeatures);
+            return featureIndexes;
         }
         #endregion
     }
