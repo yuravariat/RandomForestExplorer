@@ -180,7 +180,9 @@ namespace RandomForestExplorer.RandomForests
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
             {
                 double realNum = instanceValue.Number;
-                string vote = System.Math.Pow((realNum - node.Item.PredictedMean), 2) < node.Item.PredictedError ? "yes" : "no";
+                var diff = System.Math.Abs( (node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError) );
+
+                string vote = diff <= 2 ? "yes" : "no";
                 instanceValue.Votes[vote]++;
                 return;
             }
