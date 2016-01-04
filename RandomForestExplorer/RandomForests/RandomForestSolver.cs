@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using RandomForestExplorer.DecisionTrees;
 using System.Text;
+using System.Collections.Generic;
 
 namespace RandomForestExplorer.RandomForests
 {
@@ -32,9 +33,13 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Public Methods
-        public Action<int> OnCompletion { get; set; }
+        public Action<double[,]> OnEvaluationCompletion { get; set; }
+
+        public Action<int> OnForestCompletion { get; set; }
 
         public Action OnProgress { get; set; }
+
+        public Action<Exception> OnError { get; set; } 
 
         public void Run()
         {
@@ -49,6 +54,24 @@ namespace RandomForestExplorer.RandomForests
         public void Cancel()
         {
             _source.Cancel();
+        }
+
+        public int GetTreeCount()
+        {
+            if (_forest != null)
+                return _forest.Trees.Count;
+
+            return 0;
+        }
+
+        public int GetNumOfFeatures()
+        {
+            return _numOfFeatures;
+        }
+
+        public int GetTreeDepth()
+        {
+            return _treeDepth;
         }
 
         public void Dispose()
@@ -68,74 +91,58 @@ namespace RandomForestExplorer.RandomForests
                 if (OnProgress != null)
                     OnProgress();
 
-                if (_forest.Trees.Count == _numOfTrees && OnCompletion != null)
+                if (_forest.Trees.Count == _numOfTrees)
                 {
-                    OnCompletion(_forest.Trees.Count);
+                    if (OnForestCompletion != null)
+                        OnForestCompletion(_forest.Trees.Count);
 
-                    var instances = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+                    var evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+                    var confusionMatrix = BuildConfusionMatrix(evaluationData);
 
-                    //for each class create a vector of n classes
-                    /*
-                            1 2 3 ... n
-                        1   
-                        2
-                        3
-                        ...
-                        n
-                    */
-
-                    /*
-                                === Confusion Matrix ===
-
-                                a   b   c   <-- classified as
-                                324  21   0 |   a = 0
-                                44 290  18 |   b = 1
-                                0  16 307 |   c = 2
-                    */
-
-                    var horizontalStringBuilder = new StringBuilder("\t\t");
-                    var verticalStringBuilder = new StringBuilder("\n\n");
-                    foreach (var @class in _dataModel.Classes)
-                    {
-                        horizontalStringBuilder.AppendFormat("{0}\t", @class);
-                    }
-
-                    double[,] confusionMatrix = new double[ _dataModel.Classes.Count, _dataModel.Classes.Count ];
-                    foreach(var entry in instances)
-                    {
-                        //foreach(var voteEntry in instVal.ClassVotes)
-                        {
-                            //vertical
-                            var orignalClass = int.Parse(entry.Key.Class);
-                            var votedClass = int.Parse(entry.Value);
-                            //horizontal
-                            confusionMatrix[orignalClass, votedClass] += 1;
-
-                        }
-                    }
-
-
-                    //var matrix = new SortedDictionary<string, List<double>>();
-
-
-
-                    //Matrix < double > m = Matrix<double>.Build.
-
-
-
+                    if (OnEvaluationCompletion != null)
+                        OnEvaluationCompletion(confusionMatrix);
                 }
             }
             catch (Exception ex)
             {
-
+                if (OnError != null)
+                    OnError(ex);
             }
         }
 
+        /// <summary>
+        /// Build a single decision tree in the forest.
+        /// </summary>
+        /// <returns></returns>
         private DecisionTree BuildTree()
         {
             return new TreeBuilder(_dataModel, _numOfFeatures, _seed, _treeDepth).Build();
         }
 
+        /// <summary>
+        /// Build the confusion matrix.
+        /// </summary>
+        /// <param name="instances"></param>
+        /// <returns></returns>
+        private double[,] BuildConfusionMatrix(Dictionary<Instance, string> instances)
+        {
+            double[,] confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
+            foreach (var entry in instances)
+            {
+                var orignalClass = int.Parse(entry.Key.Class);
+                var votedClass = int.Parse(entry.Value);
+                confusionMatrix[orignalClass, votedClass] += 1;
+            }
+
+            return confusionMatrix;
+        }
+
+        /// <summary>
+        /// Adjusts the number of features based on: Log2(total features) + 1
+        /// When the value is 0, using this formula, otherwise using user's choice
+        /// </summary>
+        /// <param name="p_numOfFeatures"></param>
+        /// <returns></returns>
         private int AdjustNumOfFeatures(int p_numOfFeatures)
         {
             if (p_numOfFeatures > 0)
@@ -144,6 +151,11 @@ namespace RandomForestExplorer.RandomForests
             return (int)Math.Log(_dataModel.TotalFeatures, 2) + 1;
         }
 
+        /// <summary>
+        /// Adjusts the tree depth. Value of 0 means the tree depth is unlimited.
+        /// </summary>
+        /// <param name="treeDepth"></param>
+        /// <returns></returns>
         private int AdjustTreeDepth(int treeDepth)
         {
             if (treeDepth == 0)

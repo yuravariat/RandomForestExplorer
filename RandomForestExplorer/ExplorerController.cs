@@ -4,6 +4,7 @@ using System.Linq;
 using RandomForestExplorer.Data;
 using RandomForestExplorer.RandomForests;
 using System.Collections.Generic;
+using System.Text;
 
 namespace RandomForestExplorer
 {
@@ -26,6 +27,11 @@ namespace RandomForestExplorer
 
         private void OnStart()
         {
+            if (!TryBuildTrainingData())
+                return;
+
+            _view.Write("Started training...");
+
             _model.IsReady = false;
             _model.InProcess = true;
 
@@ -33,35 +39,71 @@ namespace RandomForestExplorer
             _view.ProgressBar.Minimum = 0;
             _view.ProgressBar.Maximum = _view.NumberOfTrees;
 
-            BuildTrainingData();
             _solver = new RandomForestSolver(_model,
                                             _view.NumberOfTrees, 
                                             _view.NumberOfFeatures,
                                             _view.TreeDepth,
                                             1);
 
-            _solver.OnCompletion = new Action<int>(OnSolverComletion);
+            _solver.OnForestCompletion = new Action<int>(OnForestCompletion);
+            _solver.OnEvaluationCompletion = new Action<double[,]>(OnEvaluationCompletion);
             _solver.OnProgress = new Action(OnSolverProgress);
+            _solver.OnError = (ex) => { _view.Write(string.Format("{0}\n{1}", ex.Message, ex.StackTrace)); };
             _solver.Run();
         }
 
         private void OnStop()
         {
             _solver.Cancel();
-            OnSolverComletion(0);
-        }
-
-        private void OnSolverComletion(int totalTrees)
-        {
-            _model.IsReady = true;
-            _model.InProcess = false;
-
-            _view.Write("Complete Random-Forest trees generation. Total trees built: " + totalTrees);
+            OnForestCompletion(_solver.GetTreeCount());
         }
 
         private void OnSolverProgress()
         {
             _view.ProgressBar.Increment(1);
+        }
+
+        private void OnForestCompletion(int totalTrees)
+        {
+            _model.IsReady = true;
+            _model.InProcess = false;
+
+            var message = "Completed training";
+            var info = string.Format("{0}\nTotal trees: {1}\nTree Depth: {2}\nTotal Features: {3}",
+                message, 
+                _solver.GetTreeCount(), 
+                _solver.GetTreeDepth()==int.MaxValue ? "unlimited" : _solver.GetTreeDepth().ToString(), 
+                _solver.GetNumOfFeatures());
+            _view.Write(info);
+        }
+
+        private void OnEvaluationCompletion(double[,] confusionMatrix)
+        {
+            var strBld = new StringBuilder("Completed evaluation.\nThe results are:");
+            strBld.AppendLine();
+            strBld.AppendLine();
+            strBld.Append("\t=== Confusion Matrix ===");
+            strBld.AppendLine();
+            strBld.Append("\t\t");
+
+            for (var i = 0; i < confusionMatrix.GetLength(0); i++)
+            {
+                strBld.AppendFormat("{0}\t", _model.Classes[i]);
+            }
+
+            strBld.AppendLine();
+
+            for (var i = 0; i < confusionMatrix.GetLength(0); i++)
+            {
+                strBld.AppendFormat("\tclass={0} | \t", _model.Classes[i]);
+                for (var j = 0; j < confusionMatrix.GetLength(0); j++)
+                {
+                    strBld.AppendFormat("{0}\t", confusionMatrix[i, j]);
+                }
+                strBld.AppendLine();
+            }
+
+            _view.Write(strBld.ToString());
         }
 
         private void OnFileLoad(string p_fileName)
@@ -77,7 +119,7 @@ namespace RandomForestExplorer
             _model.TrainingFileName = p_fileName;
         }
 
-        private void BuildTrainingData()
+        private bool TryBuildTrainingData()
         {
             _model.TrainingInstances.Clear();
 
@@ -97,6 +139,7 @@ namespace RandomForestExplorer
                                                          "Error",
                                                          System.Windows.Forms.MessageBoxButtons.OK,
                                                          System.Windows.Forms.MessageBoxIcon.Error);
+                    return false;
                 }
                 else
                 {
@@ -116,6 +159,8 @@ namespace RandomForestExplorer
                     }
                 }
             }
+
+            return true;
         }
 
         private void FillModel(string p_fileName)
@@ -204,7 +249,8 @@ namespace RandomForestExplorer
 
             if (_solver != null)
             {
-                _solver.OnCompletion = null;
+                _solver.OnForestCompletion = null;
+                _solver.OnEvaluationCompletion = null;
                 _solver.OnProgress = null;
             }
 
