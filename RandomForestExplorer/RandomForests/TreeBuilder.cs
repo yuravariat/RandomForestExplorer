@@ -381,7 +381,17 @@ namespace RandomForestExplorer.RandomForests
 
         private List<int> RandomizeFeatures()
         {
-            return _randomizer.Randomize(_seed, 0, _model.TotalFeatures, _numOfFeatures);
+            var random = new Random(_seed);
+            var items = new List<int>(_numOfFeatures);
+
+            while (items.Count < _numOfFeatures)
+            {
+                items.Add(random.Next(0, _model.TotalFeatures));
+            }
+
+            //return items.Distinct().ToList();
+            return items.ToList();
+            //return _randomizer.Randomize(_seed, 0, _model.TotalFeatures, _numOfFeatures);
         }
         #endregion
     }

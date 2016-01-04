@@ -229,7 +229,7 @@ namespace RandomForestExplorer
                         }
                         else if (segments[1] == attrTag)
                         {
-                            _model.DataType = DecisionTrees.TreeOutput.Regression;
+                            _model.DataType = DecisionTrees.TreeOutput.ClassifiedCategory;
                         }
                         else
                         {                            

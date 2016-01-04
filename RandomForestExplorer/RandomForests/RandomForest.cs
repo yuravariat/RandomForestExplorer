@@ -25,7 +25,7 @@ namespace RandomForestExplorer.RandomForests
                 //initialize instance entry with an empty list
                 instanceData.Add(instanceIndex, new List<InstanceValue>());
 
-                //filee the  instance values list
+                //fill the  instance values list
                 foreach (var value in instances[instanceIndex].Values)
                 {
                     instanceData[instanceIndex].Add(new InstanceValue(instances[instanceIndex].Class, value, classes));
@@ -63,13 +63,18 @@ namespace RandomForestExplorer.RandomForests
                 var mostVotedClass = string.Empty;
                 foreach(var counter in instanceClassCounters)
                 {
-                    var voutes = counter.Value;
+                    var votes = counter.Value;
                     var votedClass = counter.Key;
 
-                    if (voutes > mostVoted)
+                    if (votes > mostVoted)
                     {
-                        mostVoted = voutes;
+                        mostVoted = votes;
                         mostVotedClass = votedClass;
+                    }
+                    else
+                    {
+                        //if (votes == mostVoted && votes > 0)
+                        //    mostVotedClass = instances[entry.Key].Class;
                     }
                 }
 
