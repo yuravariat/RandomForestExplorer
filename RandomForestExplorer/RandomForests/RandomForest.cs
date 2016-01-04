@@ -2,39 +2,43 @@
 using RandomForestExplorer.DecisionTrees;
 using RandomForestExplorer.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System;
 using System.Collections.ObjectModel;
 
 namespace RandomForestExplorer.RandomForests
 {
     class RandomForest
     {
-        public ConcurrentBag<DecisionTree> Trees { get; set; }
+        public ConcurrentBag<DecisionTree> Trees { get; private set; }
 
         public RandomForest()
         {
             Trees = new ConcurrentBag<DecisionTree>();
         }
 
-        public Dictionary<Instance, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
+        public Dictionary<int, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
         {
-            Dictionary<Instance, List<InstanceValue>> instanceData = new Dictionary<Instance, List<InstanceValue>>();
-
-            for (var i=0; i < instances.Count; i++)
+            //########### Prepare #############
+            Dictionary<int, List<InstanceValue>> instanceData = new Dictionary<int, List<InstanceValue>>();
+            //for each instance add the instance index for later reference and the list of instance values
+            for (var instanceIndex=0; instanceIndex < instances.Count; instanceIndex++)
             {
-                instanceData.Add(instances[i], new List<InstanceValue>());
-                foreach (var value in instances[i].Values)
+                //initialize instance entry with an empty list
+                instanceData.Add(instanceIndex, new List<InstanceValue>());
+
+                //filee the  instance values list
+                foreach (var value in instances[instanceIndex].Values)
                 {
-                    instanceData[instances[i]].Add(new InstanceValue(instances[i].Class, value, classes));
+                    instanceData[instanceIndex].Add(new InstanceValue(instances[instanceIndex].Class, value, classes));
                 }
             }
 
-            //evaluate internal instance values
+            //########### Evaluate ############
+            //run each instance value evaluation for all forest trees (N features * M trees * X instances)
             EvaluateTrees(instanceData);
 
-            var result = new Dictionary<Instance, string>();
-            //summarize all values per instance
+            //########### Summarize ###########
+            var result = new Dictionary<int, string>();
+            //made a decision for every instance: aggregate all instance evaluated values into class counts. the highest class is the winner.
             foreach(var entry in instanceData)
             {
                 //initialize counters
@@ -45,7 +49,8 @@ namespace RandomForestExplorer.RandomForests
                 }
 
                 //aggregate counts from instance values
-                foreach(var instVal in entry.Value)
+                var instanceValues = entry.Value;
+                foreach (var instVal in instanceValues)
                 {
                     foreach(var vote in instVal.ClassVotes)
                     {
@@ -58,10 +63,13 @@ namespace RandomForestExplorer.RandomForests
                 var mostVotedClass = string.Empty;
                 foreach(var counter in instanceClassCounters)
                 {
-                    if (counter.Value > mostVoted)
+                    var voutes = counter.Value;
+                    var votedClass = counter.Key;
+
+                    if (voutes > mostVoted)
                     {
-                        mostVoted = counter.Value;
-                        mostVotedClass = counter.Key;
+                        mostVoted = voutes;
+                        mostVotedClass = votedClass;
                     }
                 }
 
@@ -71,7 +79,7 @@ namespace RandomForestExplorer.RandomForests
             return result;
         }
 
-        public void EvaluateTrees(Dictionary<Instance,List<InstanceValue>> instanceData)
+        public void EvaluateTrees(Dictionary<int,List<InstanceValue>> instanceData)
         {
             foreach(var tree in Trees)
             {
@@ -79,13 +87,13 @@ namespace RandomForestExplorer.RandomForests
                 {
                     foreach(var instVal in instanceEntry.Value)
                     {
-                        Classify(tree.RootNode, instVal);
+                        EvaluateNode(tree.RootNode, instVal);
                     }
                 }
             }
         }
 
-        public void Classify(ITreeNode<DecisionNode> node, InstanceValue instanceValue)
+        public void EvaluateNode(ITreeNode<DecisionNode> node, InstanceValue instanceValue)
         {
             //if reached the leaf node or the split value equals to the current value, stop the evaluation and vote for the appropriate class
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
@@ -97,12 +105,12 @@ namespace RandomForestExplorer.RandomForests
             //go left
             if (node.Item.SplitValue.CompareTo(instanceValue.Value) >= 0)
             {
-                Classify(node.Left, instanceValue);
+                EvaluateNode(node.Left, instanceValue);
             }
             //go right
             else
             {
-                Classify(node.Right, instanceValue);
+                EvaluateNode(node.Right, instanceValue);
             }
         }
     }

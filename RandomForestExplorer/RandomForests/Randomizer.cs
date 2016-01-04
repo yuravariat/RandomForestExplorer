@@ -8,7 +8,7 @@ namespace RandomForestExplorer.RandomForests
     {
         public List<int> Randomize(int p_seed, int p_minValue, int p_maxValue, int p_count)
         {
-            var random = new Random();
+            var random = new Random(p_seed);
             var items = new List<int>();
 
             while (items.Count < p_count)

@@ -136,7 +136,7 @@ namespace RandomForestExplorer.RandomForests
             double[,] confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
             foreach (var entry in evaluationData)
             {
-                var orignalClass = int.Parse(entry.Key.Class);
+                var orignalClass = int.Parse(_dataModel.Instances[entry.Key].Class);
                 var votedClass = int.Parse(entry.Value);
                 confusionMatrix[orignalClass, votedClass] += 1;
             }
