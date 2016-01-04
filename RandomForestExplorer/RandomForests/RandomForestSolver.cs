@@ -44,9 +44,10 @@ namespace RandomForestExplorer.RandomForests
         public void Run()
         {
             _forest = new RandomForest();
-
+            //all trees are built asynchronously
             for(var i=0; i < _numOfTrees; i++)
             {
+                //async operation
                 RunAsync();
             }
         }
@@ -81,24 +82,29 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Private Members
+        /// <summary>
+        /// Executes the random forest algorithm asynchronously.
+        /// </summary>
         private async void RunAsync()
         {
             try
             {
+                //build the tree asynchronously
                 var tree = await Task.Factory.StartNew(BuildTree, _source.Token);
+                //on completion add to the forest trees collection
                 _forest.Trees.Add(tree);
-
+                //and report progress
                 if (OnProgress != null)
                     OnProgress();
-
+                //if all trees were built we are ready to evaluate the forest
                 if (_forest.Trees.Count == _numOfTrees)
                 {
+                    //first report on forest completion
                     if (OnForestCompletion != null)
                         OnForestCompletion(_forest.Trees.Count);
-
-                    var evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
-                    var confusionMatrix = BuildConfusionMatrix(evaluationData);
-
+                    //then evaluate and build confusion matrix asynchronously as well as any other metrics
+                    var confusionMatrix = await Task.Factory.StartNew(BuildConfusionMatrix, _source.Token);
+                    //eventually report the confusion matrix to the GUI
                     if (OnEvaluationCompletion != null)
                         OnEvaluationCompletion(confusionMatrix);
                 }
@@ -124,10 +130,11 @@ namespace RandomForestExplorer.RandomForests
         /// </summary>
         /// <param name="instances"></param>
         /// <returns></returns>
-        private double[,] BuildConfusionMatrix(Dictionary<Instance, string> instances)
+        private double[,] BuildConfusionMatrix()
         {
+            var evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
             double[,] confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
-            foreach (var entry in instances)
+            foreach (var entry in evaluationData)
             {
                 var orignalClass = int.Parse(entry.Key.Class);
                 var votedClass = int.Parse(entry.Value);
