@@ -19,6 +19,7 @@ namespace RandomForestExplorer.Data
             return new Instance
             {
                 Class = Class,
+                Number = Number,
                 Values = new List<double>(Values)
             };
         }
