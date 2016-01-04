@@ -51,7 +51,7 @@ namespace RandomForestExplorer.RandomForests
                 else
                 {
                     double totalVariance = Variance(clonedList);
-                    _minVariance = (int)(_model.Instances.Count * 0.02); // 2% of the variance.
+                    _minVariance = (int)(totalVariance * 0.02); // 5% of the variance.
                     tree.RootNode = CreateNodeRegresion(clonedList, 0, totalVariance);
                 }
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
@@ -246,6 +246,8 @@ namespace RandomForestExplorer.RandomForests
                 // Reset counters
                 totalSubsetCount1 = 0;
                 totalSubsetCount2 = instances.Count;
+                totalSub1 = 0;
+                totalSub2 = instances.Sum(v => v.Number);
                 meanSub1 = 0;
                 meanSub2 = prevMean.HasValue ? prevMean.Value : Mean(instances);
                 varianceSub1 = 0;

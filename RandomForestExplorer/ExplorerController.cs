@@ -113,6 +113,10 @@ namespace RandomForestExplorer
             _model.TrainingFromFile = true;
             _model.IsReady = true;
             OnTrainingFileLoad(Path.ChangeExtension(p_fileName, "txt"));
+
+            // For test
+            //TreeBuilder tb = new TreeBuilder(_model, 4, 0, 7);
+            //var tree = tb.Build();
         }
 
         private void OnTrainingFileLoad(string p_fileName)
@@ -229,7 +233,7 @@ namespace RandomForestExplorer
                         }
                         else if (segments[1] == attrTag)
                         {
-                            _model.DataType = DecisionTrees.TreeOutput.ClassifiedCategory;
+                            _model.DataType = DecisionTrees.TreeOutput.Regression;
                         }
                         else
                         {                            
