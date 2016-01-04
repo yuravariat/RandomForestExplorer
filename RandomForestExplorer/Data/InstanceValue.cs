@@ -8,14 +8,12 @@ namespace RandomForestExplorer.Data
     {
         public ConcurrentDictionary<string,int> ClassVotes { get; set; }
         public string Class { get; private set; }
-        public double Value { get; private set; }
-        public int FeatureIndex { get; private set; }
+        public List<double> Values { get; private set; }
 
-        public InstanceValue(int featureIndex, string @class, double value, IEnumerable<string> classes)
+        public InstanceValue(string @class, List<double> values, IEnumerable<string> classes)
         {
-            FeatureIndex = featureIndex;
             Class = @class;
-            Value = value;
+            Values = values;
             ClassVotes = new ConcurrentDictionary<string, int>();
             foreach(var cls in classes)
             {
