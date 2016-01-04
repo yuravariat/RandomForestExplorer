@@ -39,7 +39,7 @@ namespace RandomForestExplorer.RandomForests
             {
                 DecisionTree tree = new DecisionTree();
                 tree.OutputType = _model.DataType;
-                _minimumInastancesInNode = (int)(_model.Instances.Count * 0.02); // 5% of the data.
+                _minimumInastancesInNode = (int)(_model.Instances.Count * 0.003); // 0.03% of the data.
 
                 var watch = Stopwatch.StartNew();
                 var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
@@ -51,7 +51,7 @@ namespace RandomForestExplorer.RandomForests
                 else
                 {
                     double totalVariance = Variance(clonedList);
-                    _minVariance = (int)(totalVariance * 0.02); // 5% of the variance.
+                    _minVariance = (int)(totalVariance * 0.005); //  0.03% of the variance.
                     tree.RootNode = CreateNodeRegresion(clonedList, 0, totalVariance);
                 }
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
@@ -68,7 +68,7 @@ namespace RandomForestExplorer.RandomForests
         /// <param name="node"></param>
         /// <param name="instances"></param>
         /// <param name="randomFeaturesNum"></param>
-        private TreeNode CreateNode(List<Instance> instances, int treeDepth, Tuple<double, string> giniPrevScore=null)
+        private TreeNode CreateNode(List<Instance> instances, int treeDepth, Tuple<double, string> giniPrevScore = null)
         {
             TreeNode node = new TreeNode();
             node.Item = new DecisionNode();
@@ -82,7 +82,7 @@ namespace RandomForestExplorer.RandomForests
             }
 
             // Gini score of the group is 0, the group is pure. or there is too few instances 
-            if (giniPrevScore.Item1==0 || instances.Count <= _minimumInastancesInNode || treeDepth == _treeDepth)
+            if (giniPrevScore.Item1 == 0 || instances.Count <= _minimumInastancesInNode || treeDepth == _treeDepth)
             {
                 node.Item.Classification = giniPrevScore.Item2;
                 return node;
@@ -104,15 +104,15 @@ namespace RandomForestExplorer.RandomForests
             //swTotalAllSplits.Start();
 
             // Classes counters
-            Dictionary<string, int> totalCalssesS1 = new Dictionary<string, int>();       
-            Dictionary<string, int> totalCalssesS2 = new Dictionary<string, int>();       
-            foreach (string classe in _model.Classes)                                     
-            {                                                                             
-                totalCalssesS1.Add(classe, 0);                                            
-                totalCalssesS2.Add(classe, 0);                                            
+            Dictionary<string, int> totalCalssesS1 = new Dictionary<string, int>();
+            Dictionary<string, int> totalCalssesS2 = new Dictionary<string, int>();
+            foreach (string classe in _model.Classes)
+            {
+                totalCalssesS1.Add(classe, 0);
+                totalCalssesS2.Add(classe, 0);
             }
             int totalSubset1, totalSubset2;
-            Tuple<double,string> min_gini1 = null, min_gini2 = null;
+            Tuple<double, string> min_gini1 = null, min_gini2 = null;
 
             // Loop thought all feature and all values.
             foreach (var featureIndex in featureIndexes)
@@ -120,28 +120,28 @@ namespace RandomForestExplorer.RandomForests
                 instances.Sort((a, b) => a.Values[featureIndex].CompareTo(b.Values[featureIndex]));
 
                 // Reset counters
-                foreach (string classe in _model.Classes)                                     
-                {                                                                             
-                    totalCalssesS1[classe] = 0;                                               
-                    totalCalssesS2[classe] = 0;                                               
-                }                                                                             
-                for (int i = 0; i < instances.Count; i++)                                     
-                {                                                                             
-                    totalCalssesS2[instances[i].Class] += 1;                                  
-                }                                                                                                                          
-                totalSubset1 = 0;                                                          
-                totalSubset2 = instances.Count;                                                                   
+                foreach (string classe in _model.Classes)
+                {
+                    totalCalssesS1[classe] = 0;
+                    totalCalssesS2[classe] = 0;
+                }
+                for (int i = 0; i < instances.Count; i++)
+                {
+                    totalCalssesS2[instances[i].Class] += 1;
+                }
+                totalSubset1 = 0;
+                totalSubset2 = instances.Count;
 
                 for (int i = 0; i < instances.Count; i++)
                 {
                     // Update counters
-                    totalCalssesS1[instances[i].Class] += 1;                                 
-                    totalCalssesS2[instances[i].Class] -= 1;                                 
-                    totalSubset1 ++;                                                        
-                    totalSubset2 --;                                                        
+                    totalCalssesS1[instances[i].Class] += 1;
+                    totalCalssesS2[instances[i].Class] -= 1;
+                    totalSubset1++;
+                    totalSubset2--;
 
                     // if next value has the same value dont calculate gini split is not finished.
-                    if (i < (instances.Count-1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
+                    if (i < (instances.Count - 1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
                     {
                         continue;
                     }
@@ -150,18 +150,18 @@ namespace RandomForestExplorer.RandomForests
                     string @class1;
                     var gini1 = GiniScore(totalCalssesS1, out @class1);
                     string @class2;
-                    var gini2 = GiniScore(totalCalssesS2, out @class2);    
-                    
+                    var gini2 = GiniScore(totalCalssesS2, out @class2);
+
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    var totalScore = gini1 * ((double)totalSubset1 / (double)instances.Count)  +
-                                     gini2 * ((double)totalSubset2 / (double)instances.Count);                               
+                    var totalScore = gini1 * ((double)totalSubset1 / (double)instances.Count) +
+                                     gini2 * ((double)totalSubset2 / (double)instances.Count);
 
                     if (totalScore < minScore)
                     {
                         minScore = totalScore;
                         splitValue = instances[i].Values[featureIndex];
                         minScoreFeatureIndex = featureIndex;
-                        min_gini1 = new Tuple<double, string>(gini1,@class1);
+                        min_gini1 = new Tuple<double, string>(gini1, @class1);
                         min_gini2 = new Tuple<double, string>(gini2, @class2);
                     }
                 }
@@ -209,7 +209,8 @@ namespace RandomForestExplorer.RandomForests
             // Variance of the subset is less then minimum or there is too few instances 
             if (variancePrevScore <= _minVariance || instances.Count <= _minimumInastancesInNode || treeDepth == _treeDepth)
             {
-                node.Item.PredictedValue = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                node.Item.PredictedMean = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                node.Item.PredictedError = variancePrevScore.HasValue ? variancePrevScore.Value : Variance(instances);
                 return node;
             }
 
@@ -258,8 +259,8 @@ namespace RandomForestExplorer.RandomForests
                 for (int i = 0; i < instances.Count; i++)
                 {
                     // Update counters
-                    totalSubsetCount1 ++;
-                    totalSubsetCount2 --;
+                    totalSubsetCount1++;
+                    totalSubsetCount2--;
                     totalSub1 += instances[i].Number;
                     totalSub2 -= instances[i].Number;
                     meanSub1 = totalSub1 / totalSubsetCount1;
@@ -276,7 +277,7 @@ namespace RandomForestExplorer.RandomForests
                     }
 
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) + 
+                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) +
                                      varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
 
                     if (totalScore < minVar)
@@ -298,7 +299,8 @@ namespace RandomForestExplorer.RandomForests
             // Yura: not sure about this
             if (minVar >= variancePrevScore.Value)
             {
-                node.Item.PredictedValue = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                node.Item.PredictedMean = prevMean.HasValue ? prevMean.Value : Mean(instances);
+                node.Item.PredictedError = variancePrevScore.HasValue ? variancePrevScore.Value : Variance(instances);
                 return node;
             }
 
@@ -336,9 +338,9 @@ namespace RandomForestExplorer.RandomForests
         private double GiniScore(Dictionary<string, int> classCounts, out string @class)
         {
             var totalDataItems = classCounts.Sum(count => count.Value);
-
             var gini = 0d;
-            foreach(var classKey in classCounts.Keys)
+
+            foreach (var classKey in classCounts.Keys)
             {
                 if (classCounts[classKey] > 0)
                 {

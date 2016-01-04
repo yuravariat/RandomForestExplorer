@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace RandomForestExplorer.Data
 {
-    public class InstanceValue
+    public class ClassificationInstance
     {
         public ConcurrentDictionary<string,int> ClassVotes { get; set; }
         public string Class { get; private set; }
         public List<double> Values { get; private set; }
 
-        public InstanceValue(string @class, List<double> values, IEnumerable<string> classes)
+        public ClassificationInstance(string @class, List<double> values, IEnumerable<string> classes)
         {
             Class = @class;
             Values = values;

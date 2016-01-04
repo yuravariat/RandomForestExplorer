@@ -5,6 +5,7 @@ using System.Threading;
 using RandomForestExplorer.DecisionTrees;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RandomForestExplorer.RandomForests
 {
@@ -132,14 +133,25 @@ namespace RandomForestExplorer.RandomForests
         /// <returns></returns>
         private double[,] BuildConfusionMatrix()
         {
-            var evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
-            double[,] confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
-            foreach (var entry in evaluationData)
+            Dictionary<int, string> evaluationData = null;
+            double[,] confusionMatrix = null;
+            if (_dataModel.DataType == TreeOutput.ClassifiedCategory)
             {
-                var orignalClass = int.Parse(_dataModel.Instances[entry.Key].Class);
-                var votedClass = int.Parse(entry.Value);
-                confusionMatrix[orignalClass, votedClass] += 1;
+                evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+                confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
+                foreach (var entry in evaluationData)
+                {
+                    var orignalClass = int.Parse(_dataModel.Instances[entry.Key].Class);
+                    var votedClass = int.Parse(entry.Value);
+                    confusionMatrix[orignalClass, votedClass] += 1;
+                }
             }
+            else
+            {
+                evaluationData = _forest.EvaluateRegression(_dataModel.Instances, _dataModel.Classes);
+                var yeses = evaluationData.Values.Count(v => v == "yes");
+            }
+            
 
             return confusionMatrix;
         }

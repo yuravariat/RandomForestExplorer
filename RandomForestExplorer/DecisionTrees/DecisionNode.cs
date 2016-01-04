@@ -28,8 +28,12 @@ namespace RandomForestExplorer.DecisionTrees
         /// </summary>
         public string Classification;
         /// <summary>
-        /// Predicted numeric value
+        /// Predicted mean value
         /// </summary>
-        public double PredictedValue;
+        public double PredictedMean;
+        /// <summary>
+        /// Predicted mean value
+        /// </summary>
+        public double PredictedError;
     }
 }
