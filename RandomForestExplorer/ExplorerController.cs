@@ -133,11 +133,10 @@ namespace RandomForestExplorer
         private bool TryBuildTrainingData()
         {
             _model.TrainingInstances.Clear();
-
             if (_model.TrainingFromData)
             {
                 var percent = _view.PercentSplit;
-                
+
                 var trainingInstancesCount = (int)(percent * _model.Instances.Count) / 100;
                 _model.TrainingInstances.AddRange(_model.Instances.Take(trainingInstancesCount));
             }
@@ -152,8 +151,9 @@ namespace RandomForestExplorer
                                                          System.Windows.Forms.MessageBoxIcon.Error);
                     return false;
                 }
-              
-                if (!Path.GetFileNameWithoutExtension(_model.FileName).Equals(Path.GetFileNameWithoutExtension(_model.TrainingFileName)))
+
+                if (!Path.GetFileNameWithoutExtension(_model.FileName).Replace("2", "").
+                    Equals(Path.GetFileNameWithoutExtension(_model.TrainingFileName).Replace("2", "")))
                 {
                     System.Windows.Forms.MessageBox.Show(_view,
                                      "The data and training files do not match.",
@@ -162,14 +162,15 @@ namespace RandomForestExplorer
                                      System.Windows.Forms.MessageBoxIcon.Error);
                     return false;
                 }
-               
+
                 var lines = File.ReadAllLines(_model.TrainingFileName);
-                foreach (var line in lines.Skip(1))
+                foreach (var line in lines)
                 {
+                    if (line.StartsWith("@"))
+                        continue;
                     var segments = line.TrimEnd().Split(new[] { ' ' });
                     if (segments.Length == 0)
                         continue;
-
                     var instance = new Instance { Class = segments.Last() };
                     for (var i = 0; i < segments.Length - 1; i++)
                     {
@@ -178,7 +179,6 @@ namespace RandomForestExplorer
                     _model.TrainingInstances.Add(instance);
                 }
             }
-
             return true;
         }
 
