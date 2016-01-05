@@ -48,6 +48,7 @@ namespace RandomForestExplorer
 
             _solver.OnForestCompletion = new Action<int>(OnForestCompletion);
             _solver.OnEvaluationCompletion = new Action<Tuple<double[,], Dictionary<int, string>>>(OnEvaluationCompletion);
+            _solver.OnEvaluationCompletionRegression = new Action<Dictionary<int, Tuple<bool, double>>>(OnEvaluationCompletionRegression);
             _solver.OnProgress = new Action(OnSolverProgress);
             _solver.OnError = (ex) => { _view.Write(string.Format("{0}\n{1}", ex.Message, ex.StackTrace)); };
             _solver.Run();
@@ -115,6 +116,29 @@ namespace RandomForestExplorer
                 List<Instance>>(_model.Classes.ToArray(),tuple.Item2,_model.Instances, _model.TrainingInstances));
 
             visual.ShowDialog(_view);
+        }
+        private void OnEvaluationCompletionRegression(Dictionary<int, Tuple<bool, double>> results)
+        {
+            var numOfPredictionSuccess = 0;
+            double sumOfErrors = 0;
+
+            foreach(var treeEntry in results)
+            {
+                if (treeEntry.Value.Item1)
+                {
+                    numOfPredictionSuccess++;
+                }
+                sumOfErrors += treeEntry.Value.Item2;
+            }
+            double correlationCoefficient = numOfPredictionSuccess / (double)results.Count;
+            double meanOfErrors = sumOfErrors / (double)results.Count;
+
+            var strBld = new StringBuilder("Completed evaluation.\nThe results are:");
+            strBld.AppendLine();
+            strBld.AppendLine();
+            strBld.AppendLine("Correlation coefficient\t\t" + correlationCoefficient);
+            strBld.AppendLine();
+            strBld.AppendLine("Mean absolute error\t\t" + meanOfErrors);
         }
 
         private void OnFileLoad(string p_fileName)
