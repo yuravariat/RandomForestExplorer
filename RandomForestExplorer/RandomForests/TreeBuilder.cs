@@ -43,7 +43,7 @@ namespace RandomForestExplorer.RandomForests
 
                 var watch = Stopwatch.StartNew();
                 var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
-
+                
                 if (tree.OutputType == TreeOutput.ClassifiedCategory)
                 {
                     tree.RootNode = CreateNode(clonedList, 0);
@@ -269,13 +269,11 @@ namespace RandomForestExplorer.RandomForests
                     {
                         if (k <= i)
                         {
-                            squearSumSub1 += (instances[k].Number - meanSub1) * (instances[k].Number - meanSub1);
-                                // Math.Pow((instances[k].Number - meanSub1), 2);
+                            squearSumSub1 += Math.Pow((instances[k].Number - meanSub1), 2);
                         }
                         else
                         {
-                            squearSumSub2 += (instances[k].Number - meanSub2) * (instances[k].Number - meanSub2);
-                                //Math.Pow((instances[k].Number - meanSub2), 2);
+                            squearSumSub2 += Math.Pow((instances[k].Number - meanSub2), 2);
                         }
                     }
                     
@@ -289,9 +287,8 @@ namespace RandomForestExplorer.RandomForests
                     }
 
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    //var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) +
-                    //                 varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
-                    var totalScore = varianceSub1  + varianceSub2;
+                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) +
+                                     varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
 
                     if (totalScore < minVar)
                     {
