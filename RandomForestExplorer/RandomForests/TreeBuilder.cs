@@ -226,11 +226,11 @@ namespace RandomForestExplorer.RandomForests
             int minScoreFeatureIndex = -1;
 
             //Metric
-            //Stopwatch swTotalAllSplits = new Stopwatch();
-            //Stopwatch swSplit = new Stopwatch();
-            //List<double> miliseconds = new List<double>(instances.Count);
+            Stopwatch swTotalAllSplits = new Stopwatch();
+            Stopwatch swSplit = new Stopwatch();
+            List<double> miliseconds = new List<double>(instances.Count);
 
-            //swTotalAllSplits.Start();
+            swTotalAllSplits.Start();
 
             // Counters
             int totalSubsetCount1, totalSubsetCount2;
@@ -243,6 +243,9 @@ namespace RandomForestExplorer.RandomForests
             // Loop thought all feature and all values.
             foreach (var featureIndex in featureIndexes)
             {
+                swSplit.Reset();
+                swSplit.Start();
+
                 instances.Sort((a, b) => a.Values[featureIndex].CompareTo(b.Values[featureIndex]));
 
                 // Reset counters
@@ -265,20 +268,24 @@ namespace RandomForestExplorer.RandomForests
 
                     squearSumSub1 = 0;
                     squearSumSub2 = 0;
+
+                    double diff = 0;
                     for (int k = 0; k < instances.Count; k++)
                     {
                         if (k <= i)
                         {
-                            squearSumSub1 += Math.Pow((instances[k].Number - meanSub1), 2);
+                            diff = meanSub1 - instances[k].Number;
+                            squearSumSub1 += diff * diff;
                         }
                         else
                         {
-                            squearSumSub2 += Math.Pow((instances[k].Number - meanSub2), 2);
+                            diff = meanSub2 - instances[k].Number;
+                            squearSumSub2 += diff * diff;
                         }
                     }
-                    
-                    varianceSub1 = squearSumSub1 / totalSubsetCount1;
-                    varianceSub2 = squearSumSub2 / totalSubsetCount2;
+
+                    varianceSub1 = totalSubsetCount1 == 1 ? 0 : squearSumSub1 / (totalSubsetCount1 - 1);
+                    varianceSub2 = totalSubsetCount2 == 1 ? 0 : squearSumSub2 / (totalSubsetCount2 - 1);
 
                     // if next value has the same value dont calculate gini split is not finished.
                     if (i < (instances.Count - 1) && instances[i].Values[featureIndex] == instances[i + 1].Values[featureIndex])
@@ -301,9 +308,12 @@ namespace RandomForestExplorer.RandomForests
                         minMeanRight = meanSub2;
                     }
                 }
+                swSplit.Stop();
+                miliseconds.Add(swSplit.Elapsed.TotalMilliseconds);
+
             }
-            //swTotalAllSplits.Stop();
-            //double totalMilisecondsAllSplits = swTotalAllSplits.Elapsed.TotalMilliseconds;
+            swTotalAllSplits.Stop();
+            double totalMilisecondsAllSplits = swTotalAllSplits.Elapsed.TotalMilliseconds;
 
             // There is no improvment no need to split.
             // Yura: not sure about this
@@ -381,7 +391,7 @@ namespace RandomForestExplorer.RandomForests
             {
                 variance += Math.Pow((instances[i].Number - mean), 2);
             }
-            variance = variance / (double)instances.Count;
+            variance = variance / ((double)instances.Count - 1);
 
             return variance;
         }
