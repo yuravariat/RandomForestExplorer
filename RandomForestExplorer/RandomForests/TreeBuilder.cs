@@ -51,7 +51,7 @@ namespace RandomForestExplorer.RandomForests
                 else
                 {
                     double totalVariance = Variance(clonedList);
-                    _minVariance = (int)(totalVariance * 0.005); //  0.05% of the variance.
+                    _minVariance = totalVariance * 0.1; //  10% of the variance.
                     tree.RootNode = CreateNodeRegresion(clonedList, 0, totalVariance);
                 }
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
@@ -251,8 +251,6 @@ namespace RandomForestExplorer.RandomForests
                 totalSub2 = instances.Sum(v => v.Number);
                 meanSub1 = 0;
                 meanSub2 = prevMean.HasValue ? prevMean.Value : Mean(instances);
-                varianceSub1 = 0;
-                varianceSub2 = variancePrevScore.HasValue ? variancePrevScore.Value : Variance(instances);
                 squearSumSub1 = 0;
                 squearSumSub2 = varianceSub2 * totalSubsetCount2;
 
@@ -265,8 +263,21 @@ namespace RandomForestExplorer.RandomForests
                     totalSub2 -= instances[i].Number;
                     meanSub1 = totalSub1 / totalSubsetCount1;
                     meanSub2 = totalSub2 / totalSubsetCount2;
-                    squearSumSub1 += Math.Pow((instances[i].Number - meanSub1), 2);
-                    squearSumSub2 -= Math.Pow((instances[i].Number - meanSub2), 2);
+
+                    squearSumSub1 = 0;
+                    squearSumSub2 = 0;
+                    for (int k = 0; k < instances.Count; k++)
+                    {
+                        if (k <= i)
+                        {
+                            squearSumSub1 += Math.Pow((instances[k].Number - meanSub1), 2);
+                        }
+                        else
+                        {
+                            squearSumSub2 += Math.Pow((instances[k].Number - meanSub2), 2);
+                        }
+                    }
+                    
                     varianceSub1 = squearSumSub1 / totalSubsetCount1;
                     varianceSub2 = squearSumSub2 / totalSubsetCount2;
 

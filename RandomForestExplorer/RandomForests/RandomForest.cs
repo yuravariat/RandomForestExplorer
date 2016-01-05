@@ -182,7 +182,7 @@ namespace RandomForestExplorer.RandomForests
                 double realNum = instanceValue.Number;
                 var diff = System.Math.Abs( (node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError) );
 
-                string vote = diff <= 2 ? "yes" : "no";
+                string vote = diff <= 2.5 ? "yes" : "no";
                 instanceValue.Votes[vote]++;
                 return;
             }
