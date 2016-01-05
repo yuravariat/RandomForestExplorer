@@ -55,7 +55,7 @@ namespace RandomForestExplorer.RandomForests
                         mostVotedClass = votedClass;
                     }
                 }
-                result.Add(entry.TreeID, mostVotedClass);
+                result.Add(entry.Index, mostVotedClass);
             }
 
             return result;
@@ -82,10 +82,10 @@ namespace RandomForestExplorer.RandomForests
                     }
                     sumOfErrors += tup.Item2;
                 }
-                bool ifPredictionSuccess = numOfPredictionSuccess > entry.RegressionVotes.Count;
+                bool ifPredictionSuccess = numOfPredictionSuccess >= entry.RegressionVotes.Count;
                 double averageError = sumOfErrors / (double)entry.RegressionVotes.Count;
                 Tuple<bool, double> aggrigation = new Tuple<bool, double>(ifPredictionSuccess, averageError);
-                result.Add(entry.TreeID, aggrigation);
+                result.Add(entry.Index, aggrigation);
             }
 
             return result;
@@ -156,7 +156,8 @@ namespace RandomForestExplorer.RandomForests
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
             {
                 double realNum = instanceValue.Number;
-                var diff = System.Math.Abs((node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError));
+                var diff = node.Item.PredictedError == 0 ? 0 :
+                    System.Math.Abs((node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError));
 
                 instanceValue.RegressionVotes.Add(new Tuple<bool, double>(diff <= 2.5, diff));
                 return;
