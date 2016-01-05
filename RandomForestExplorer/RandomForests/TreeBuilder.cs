@@ -43,7 +43,7 @@ namespace RandomForestExplorer.RandomForests
 
                 var watch = Stopwatch.StartNew();
                 var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
-                watch.Stop();
+
                 if (tree.OutputType == TreeOutput.ClassifiedCategory)
                 {
                     tree.RootNode = CreateNode(clonedList, 0);
@@ -54,6 +54,7 @@ namespace RandomForestExplorer.RandomForests
                     _minVariance = totalVariance * 0.1; //  10% of the variance.
                     tree.RootNode = CreateNodeRegresion(clonedList, 0, totalVariance);
                 }
+                watch.Stop();
                 double buildTreeTime = watch.Elapsed.TotalMilliseconds;
                 return tree;
             }
@@ -132,7 +133,7 @@ namespace RandomForestExplorer.RandomForests
                 totalSubset1 = 0;
                 totalSubset2 = instances.Count;
 
-                for (int i = 0; i < instances.Count; i++)
+                for (int i = 0; i < instances.Count-1; i++)
                 {
                     // Update counters
                     totalCalssesS1[instances[i].Class] += 1;
@@ -251,10 +252,8 @@ namespace RandomForestExplorer.RandomForests
                 totalSub2 = instances.Sum(v => v.Number);
                 meanSub1 = 0;
                 meanSub2 = prevMean.HasValue ? prevMean.Value : Mean(instances);
-                squearSumSub1 = 0;
-                squearSumSub2 = varianceSub2 * totalSubsetCount2;
 
-                for (int i = 0; i < instances.Count; i++)
+                for (int i = 0; i < instances.Count-1; i++)
                 {
                     // Update counters
                     totalSubsetCount1++;
@@ -270,11 +269,13 @@ namespace RandomForestExplorer.RandomForests
                     {
                         if (k <= i)
                         {
-                            squearSumSub1 += Math.Pow((instances[k].Number - meanSub1), 2);
+                            squearSumSub1 += (instances[k].Number - meanSub1) * (instances[k].Number - meanSub1);
+                                // Math.Pow((instances[k].Number - meanSub1), 2);
                         }
                         else
                         {
-                            squearSumSub2 += Math.Pow((instances[k].Number - meanSub2), 2);
+                            squearSumSub2 += (instances[k].Number - meanSub2) * (instances[k].Number - meanSub2);
+                                //Math.Pow((instances[k].Number - meanSub2), 2);
                         }
                     }
                     
@@ -288,8 +289,9 @@ namespace RandomForestExplorer.RandomForests
                     }
 
                     //compare childs to parent: (Nl/N)*Sl + (Nr/N)*Sr                                
-                    var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) +
-                                     varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
+                    //var totalScore = varianceSub1 * ((double)totalSubsetCount1 / (double)instances.Count) +
+                    //                 varianceSub2 * ((double)totalSubsetCount2 / (double)instances.Count);
+                    var totalScore = varianceSub1  + varianceSub2;
 
                     if (totalScore < minVar)
                     {
