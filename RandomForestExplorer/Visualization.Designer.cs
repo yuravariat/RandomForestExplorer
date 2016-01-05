@@ -35,12 +35,16 @@
             this.trainingChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.testChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.trainingChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.testChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // trainingChart
@@ -50,10 +54,10 @@
             this.trainingChart.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Name = "Legend1";
             this.trainingChart.Legends.Add(legend1);
-            this.trainingChart.Location = new System.Drawing.Point(0, 0);
+            this.trainingChart.Location = new System.Drawing.Point(3, 16);
             this.trainingChart.Name = "trainingChart";
-            this.trainingChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Berry;
-            this.trainingChart.Size = new System.Drawing.Size(310, 259);
+            this.trainingChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SemiTransparent;
+            this.trainingChart.Size = new System.Drawing.Size(304, 240);
             this.trainingChart.TabIndex = 0;
             this.trainingChart.Text = "Training";
             // 
@@ -64,10 +68,10 @@
             this.testChart.Dock = System.Windows.Forms.DockStyle.Fill;
             legend2.Name = "Legend1";
             this.testChart.Legends.Add(legend2);
-            this.testChart.Location = new System.Drawing.Point(0, 0);
+            this.testChart.Location = new System.Drawing.Point(3, 16);
             this.testChart.Name = "testChart";
-            this.testChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Berry;
-            this.testChart.Size = new System.Drawing.Size(326, 259);
+            this.testChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SemiTransparent;
+            this.testChart.Size = new System.Drawing.Size(320, 240);
             this.testChart.TabIndex = 1;
             this.testChart.Text = "Test";
             // 
@@ -79,20 +83,42 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.trainingChart);
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.testChart);
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
             this.splitContainer1.Size = new System.Drawing.Size(640, 259);
             this.splitContainer1.SplitterDistance = 310;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.trainingChart);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(310, 259);
+            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Training";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.testChart);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(326, 259);
+            this.groupBox2.TabIndex = 2;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Test";
             // 
             // Visualization
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(640, 338);
+            this.ClientSize = new System.Drawing.Size(640, 289);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Visualization";
             this.Text = "Visualization";
@@ -102,6 +128,8 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -111,5 +139,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart trainingChart;
         private System.Windows.Forms.DataVisualization.Charting.Chart testChart;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

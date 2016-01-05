@@ -33,22 +33,30 @@ namespace RandomForestExplorer
             {
                 seriesMap.Add(@class, new Series(@class)
                 {
-                    ChartType = SeriesChartType.Point
+                    ChartType = SeriesChartType.FastPoint
                 });
             }
 
-            var classValues = new Dictionary<string, List<double>>();
+            var classValues = new Dictionary<string, List<KeyValuePair<double, double>>>();
             foreach (var instance in trainingInstances)
             {
                 if (!classValues.ContainsKey(instance.Class))
-                    classValues.Add(instance.Class, new List<double>());
+                    classValues.Add(instance.Class, new List<KeyValuePair<double, double>>());
 
-                classValues[instance.Class].AddRange(instance.Values);
+                classValues[instance.Class].Add(new KeyValuePair<double, double>(instance.Values[0], instance.Values[1]));
             }
 
             foreach (var keyValuePair in classValues)
             {
-                seriesMap[keyValuePair.Key].Points.DataBindY(classValues[keyValuePair.Key]);
+                var x = new List<double>();
+                var y = new List<double>();
+                foreach (var doublePairs in keyValuePair.Value)
+                {
+                    x.Add(doublePairs.Key);
+                    y.Add(doublePairs.Value);
+                }
+
+                seriesMap[keyValuePair.Key].Points.DataBindXY(x, y);
                 trainingChart.Series.Add(seriesMap[keyValuePair.Key]);
             }
         }
@@ -63,26 +71,33 @@ namespace RandomForestExplorer
             {
                 seriesMap.Add(@class, new Series(@class)
                 {
-                    ChartType = SeriesChartType.Point
+                    ChartType = SeriesChartType.FastPoint
                 });
             }
 
-
-            var classValues = new Dictionary<string, List<double>>();
+            var classValues = new Dictionary<string, List<KeyValuePair<double, double>>>();
             foreach (var result in testResults)
             {
                 var instance = testInstances[result.Key];
                 var classification = result.Value;
 
                 if (!classValues.ContainsKey(classification))
-                    classValues.Add(classification, new List<double>());
+                    classValues.Add(instance.Class, new List<KeyValuePair<double, double>>());
 
-                classValues[classification].AddRange(instance.Values);
+                classValues[classification].Add(new KeyValuePair<double, double>(instance.Values[0], instance.Values[1]));
             }
 
             foreach (var keyValuePair in classValues)
             {
-                seriesMap[keyValuePair.Key].Points.DataBindY(classValues[keyValuePair.Key]);
+                var x = new List<double>();
+                var y = new List<double>();
+                foreach (var doublePairs in keyValuePair.Value)
+                {
+                    x.Add(doublePairs.Key);
+                    y.Add(doublePairs.Value);
+                }
+
+                seriesMap[keyValuePair.Key].Points.DataBindXY(x, y);
                 testChart.Series.Add(seriesMap[keyValuePair.Key]);
             }
         }
