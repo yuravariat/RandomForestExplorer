@@ -35,6 +35,7 @@ namespace RandomForestExplorer.RandomForests
 
         #region Public Methods
         public Action<Tuple<double[,], Dictionary<int, string>>> OnEvaluationCompletion { get; set; }
+        public Action<Dictionary<int, Tuple<bool, double>>> OnEvaluationCompletionRegression { get; set; }
 
         public Action<int> OnForestCompletion { get; set; }
 
@@ -114,7 +115,9 @@ namespace RandomForestExplorer.RandomForests
                     }
                     else
                     {
-
+                        var results = await Task.Factory.StartNew(GetRegressionResults, _source.Token);
+                        if (OnEvaluationCompletionRegression != null)
+                            OnEvaluationCompletionRegression(results);
                     }
                 }
             }
@@ -153,6 +156,11 @@ namespace RandomForestExplorer.RandomForests
                 confusionMatrix[orignalClass, votedClass] += 1;
             }
             return new Tuple<double[,], Dictionary<int, string>>(confusionMatrix, evaluationData);
+        }
+        private Dictionary<int, Tuple<bool, double>> GetRegressionResults()
+        {
+            Dictionary<int, Tuple<bool, double>> results = _forest.EvaluateRegression(_dataModel.Instances);
+            return results;
         }
 
         /// <summary>

@@ -61,7 +61,7 @@ namespace RandomForestExplorer.RandomForests
             return result;
         }
 
-        public Dictionary<int, Tuple<bool,double>> EvaluateRegression(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
+        public Dictionary<int, Tuple<bool,double>> EvaluateRegression(ObservableCollection<Instance> instances)
         {
             //########### Evaluate Instances #############
             List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.Regression);
