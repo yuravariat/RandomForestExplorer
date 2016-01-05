@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\RegressionInstance.cs" />
     <Compile Include="Data\ClassificationInstance.cs" />
     <Compile Include="ControlExtensions.cs" />
     <Compile Include="Data\Feature.cs" />
