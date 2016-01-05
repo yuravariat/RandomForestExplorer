@@ -112,7 +112,13 @@ namespace RandomForestExplorer
             _model.TrainingEnabled = true;
             _model.TrainingFromFile = true;
             _model.IsReady = true;
-            OnTrainingFileLoad(Path.ChangeExtension(p_fileName, "txt"));
+
+            var fileName = Path.GetFileNameWithoutExtension(p_fileName);
+            var fileExtension = Path.GetExtension(p_fileName);
+            var trainingFileName = fileName.EndsWith("2") ? fileName.Replace("2", "") : fileName + "2";
+            var trainingFilePath = Path.Combine(Path.GetDirectoryName(p_fileName), trainingFileName);
+            trainingFilePath += fileExtension;
+            OnTrainingFileLoad(trainingFilePath);
 
             // For test
             //TreeBuilder tb = new TreeBuilder(_model, 4, 0, 7);
