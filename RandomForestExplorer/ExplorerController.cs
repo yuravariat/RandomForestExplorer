@@ -122,23 +122,24 @@ namespace RandomForestExplorer
             var numOfPredictionSuccess = 0;
             double sumOfErrors = 0;
 
-            foreach(var treeEntry in results)
+            foreach(var inst in results)
             {
-                if (treeEntry.Value.Item1)
+                if (inst.Value.Item1)
                 {
                     numOfPredictionSuccess++;
                 }
-                sumOfErrors += treeEntry.Value.Item2;
+                sumOfErrors += inst.Value.Item2;
             }
             double correlationCoefficient = numOfPredictionSuccess / (double)results.Count;
             double meanOfErrors = sumOfErrors / (double)results.Count;
 
             var strBld = new StringBuilder("Completed evaluation.\nThe results are:");
             strBld.AppendLine();
-            strBld.AppendLine();
-            strBld.AppendLine("Correlation coefficient\t\t" + correlationCoefficient);
-            strBld.AppendLine();
-            strBld.AppendLine("Mean absolute error\t\t" + meanOfErrors);
+            strBld.AppendLine("============ Regression tree results ===========");
+            strBld.AppendLine("Correlation coefficient\t" + correlationCoefficient);
+            strBld.AppendLine("Mean error\t" + meanOfErrors);
+
+            _view.Write(strBld.ToString());
         }
 
         private void OnFileLoad(string p_fileName)
