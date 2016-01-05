@@ -3,6 +3,7 @@ using RandomForestExplorer.DecisionTrees;
 using RandomForestExplorer.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System;
 
 namespace RandomForestExplorer.RandomForests
 {
@@ -17,23 +18,13 @@ namespace RandomForestExplorer.RandomForests
 
         public Dictionary<int, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
         {
-            //########### Prepare #############
-            Dictionary<int, List<ClassificationInstance>> instanceData = new Dictionary<int, List<ClassificationInstance>>();
-            //for each instance add the instance index for later reference and the list of instance values
-            for (var instanceIndex=0; instanceIndex < instances.Count; instanceIndex++)
-            {
-                instanceData.Add(instanceIndex, new List<ClassificationInstance>());
-                instanceData[instanceIndex].Add(new ClassificationInstance(instances[instanceIndex].Class, instances[instanceIndex].Values, classes));
-            }
-
-            //########### Evaluate ############
-            //run each instance value evaluation for all forest trees (N features * M trees * X instances)
-            EvaluateTrees(instanceData);
+            //########### Evaluate Instances #############
+            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.ClassifiedCategory, classes);
 
             //########### Summarize ###########
             var result = new Dictionary<int, string>();
             //made a decision for every instance: aggregate all instance evaluated values into class counts. the highest class is the winner.
-            foreach(var entry in instanceData)
+            foreach (var entry in instanceData)
             {
                 //initialize counters
                 var instanceClassCounters = new Dictionary<string, int>();
@@ -43,69 +34,12 @@ namespace RandomForestExplorer.RandomForests
                 }
 
                 //aggregate counts from instance values
-                var instanceValues = entry.Value;
-                foreach (var instVal in instanceValues)
+
+                foreach (var vote in entry.ClassVotes)
                 {
-                    foreach(var vote in instVal.ClassVotes)
-                    {
-                        instanceClassCounters[vote.Key] += vote.Value;
-                    }
+                    instanceClassCounters[vote.Key] += vote.Value;
                 }
 
-                //decision
-                var mostVoted = 0;
-                var mostVotedClass = string.Empty;
-                foreach(var counter in instanceClassCounters)
-                {
-                    var votes = counter.Value;
-                    var votedClass = counter.Key;
-
-                    if (votes > mostVoted)
-                    {
-                        mostVoted = votes;
-                        mostVotedClass = votedClass;
-                    }
-                }
-                result.Add(entry.Key, mostVotedClass);
-            }
-
-            return result;
-        }
-
-        public Dictionary<int, string> EvaluateRegression(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
-        {
-            //########### Prepare #############
-            Dictionary<int, List<RegressionInstance>> instanceData = new Dictionary<int, List<RegressionInstance>>();
-            //for each instance add the instance index for later reference and the list of instance values
-            for (var instanceIndex = 0; instanceIndex < instances.Count; instanceIndex++)
-            {
-                instanceData.Add(instanceIndex, new List<RegressionInstance>());
-                instanceData[instanceIndex].Add(new RegressionInstance(instances[instanceIndex].Number, instances[instanceIndex].Values));
-            }
-
-            //########### Evaluate ############
-            //run each instance value evaluation for all forest trees (N features * M trees * X instances)
-            EvaluateTreesRegression(instanceData);
-
-            //########### Summarize ###########
-            var result = new Dictionary<int, string>();
-            //made a decision for every instance: aggregate all instance evaluated values into class counts. the highest class is the winner.
-            foreach (var entry in instanceData)
-            {
-                //initialize counters
-                var instanceClassCounters = new Dictionary<string, int>();
-                instanceClassCounters.Add("yes", 0);
-                instanceClassCounters.Add("no", 0);
-
-                //aggregate counts from instance values
-                var instanceValues = entry.Value;
-                foreach (var instVal in instanceValues)
-                {
-                    foreach (var vote in instVal.Votes)
-                    {
-                        instanceClassCounters[vote.Key] += vote.Value;
-                    }
-                }
 
                 //decision
                 var mostVoted = 0;
@@ -121,39 +55,81 @@ namespace RandomForestExplorer.RandomForests
                         mostVotedClass = votedClass;
                     }
                 }
-                result.Add(entry.Key, mostVotedClass);
+                result.Add(entry.TreeID, mostVotedClass);
             }
 
             return result;
         }
 
-        public void EvaluateTrees(Dictionary<int,List<ClassificationInstance>> instanceData)
+        public Dictionary<int, Tuple<bool,double>> EvaluateRegression(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
         {
-            foreach(var tree in Trees)
+            //########### Evaluate Instances #############
+            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.Regression);
+
+            //########### Summarize ###########
+            var result = new Dictionary<int, Tuple<bool, double>>();
+            //made a decision for every instance: aggregate all instance evaluated values into class counts. the highest class is the winner.
+            foreach (var entry in instanceData)
             {
-                foreach(var instanceEntry in instanceData)
+                //decision
+                var numOfPredictionSuccess = 0;
+                double sumOfErrors = 0;
+                foreach (var tup in entry.RegressionVotes)
                 {
-                    foreach(var instVal in instanceEntry.Value)
+                    if (tup.Item1)
                     {
-                        EvaluateNode(tree.RootNode, instVal);
+                        numOfPredictionSuccess++;
                     }
+                    sumOfErrors += tup.Item2;
+                }
+                bool ifPredictionSuccess = numOfPredictionSuccess > entry.RegressionVotes.Count;
+                double averageError = sumOfErrors / (double)entry.RegressionVotes.Count;
+                Tuple<bool, double> aggrigation = new Tuple<bool, double>(ifPredictionSuccess, averageError);
+                result.Add(entry.TreeID, aggrigation);
+            }
+
+            return result;
+        }
+        private List<ClassificationInstance> EvaluateInstances(ObservableCollection<Instance> instances, TreeOutput treeType, ObservableCollection<string> classes = null)
+        {
+            //########### Prepare #############
+            List<ClassificationInstance> instanceData = new List<ClassificationInstance>();
+            //for each instance 
+            for (var i = 0; i < instances.Count; i++)
+            {
+                if (treeType == TreeOutput.ClassifiedCategory)
+                {
+                    instanceData.Add(new ClassificationInstance(i, instances[i].Class, instances[i].Values, classes));
+                }
+                else
+                {
+                    instanceData.Add(new ClassificationInstance(i, instances[i].Number, instances[i].Values));
                 }
             }
+
+            //########### Evaluate ############
+            //run each instance value evaluation for all forest trees (N features * M trees * X instances)
+            EvaluateTrees(instanceData);
+
+            return instanceData;
         }
-        public void EvaluateTreesRegression(Dictionary<int, List<RegressionInstance>> instanceData)
+        public void EvaluateTrees(List<ClassificationInstance> instanceData)
         {
             foreach (var tree in Trees)
             {
                 foreach (var instanceEntry in instanceData)
                 {
-                    foreach (var instVal in instanceEntry.Value)
+                    if (tree.OutputType == TreeOutput.ClassifiedCategory)
                     {
-                        EvaluateNodeRegression(tree.RootNode, instVal);
+                        EvaluateNode(tree.RootNode, instanceEntry);
+                    }
+                    else
+                    {
+                        EvaluateNodeRegression(tree.RootNode, instanceEntry);
                     }
                 }
             }
         }
-
         public void EvaluateNode(ITreeNode<DecisionNode> node, ClassificationInstance instanceValue)
         {
             //if reached the leaf node or the split value equals to the current value, stop the evaluation and vote for the appropriate class
@@ -174,16 +150,15 @@ namespace RandomForestExplorer.RandomForests
                 EvaluateNode(node.Right, instanceValue);
             }
         }
-        public void EvaluateNodeRegression(ITreeNode<DecisionNode> node, RegressionInstance instanceValue)
+        public void EvaluateNodeRegression(ITreeNode<DecisionNode> node, ClassificationInstance instanceValue)
         {
             //if reached the leaf node or the split value equals to the current value, stop the evaluation and vote for the appropriate class
             if (node.IsLeaf)// || (node.Item.SplitValue.CompareTo(instanceValue.Value)==0))
             {
                 double realNum = instanceValue.Number;
-                var diff = System.Math.Abs( (node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError) );
+                var diff = System.Math.Abs((node.Item.PredictedMean - realNum) / System.Math.Sqrt(node.Item.PredictedError));
 
-                string vote = diff <= 2.5 ? "yes" : "no";
-                instanceValue.Votes[vote]++;
+                instanceValue.RegressionVotes.Add(new Tuple<bool, double>(diff <= 2.5, diff));
                 return;
             }
 

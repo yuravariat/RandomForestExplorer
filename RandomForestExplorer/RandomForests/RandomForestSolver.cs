@@ -40,13 +40,13 @@ namespace RandomForestExplorer.RandomForests
 
         public Action OnProgress { get; set; }
 
-        public Action<Exception> OnError { get; set; } 
+        public Action<Exception> OnError { get; set; }
 
         public void Run()
         {
             _forest = new RandomForest();
             //all trees are built asynchronously
-            for(var i=0; i < _numOfTrees; i++)
+            for (var i = 0; i < _numOfTrees; i++)
             {
                 //async operation
                 RunAsync();
@@ -103,11 +103,19 @@ namespace RandomForestExplorer.RandomForests
                     //first report on forest completion
                     if (OnForestCompletion != null)
                         OnForestCompletion(_forest.Trees.Count);
-                    //then evaluate and build confusion matrix asynchronously as well as any other metrics
-                    var confusionMatrix = await Task.Factory.StartNew(BuildConfusionMatrix, _source.Token);
-                    //eventually report the confusion matrix to the GUI
-                    if (OnEvaluationCompletion != null)
-                        OnEvaluationCompletion(confusionMatrix);
+
+                    if (_dataModel.DataType == TreeOutput.ClassifiedCategory)
+                    {
+                        //then evaluate and build confusion matrix asynchronously as well as any other metrics
+                        var confusionMatrix = await Task.Factory.StartNew(BuildConfusionMatrix, _source.Token);
+                        //eventually report the confusion matrix to the GUI
+                        if (OnEvaluationCompletion != null)
+                            OnEvaluationCompletion(confusionMatrix);
+                    }
+                    else
+                    {
+
+                    }
                 }
             }
             catch (Exception ex)
@@ -135,24 +143,15 @@ namespace RandomForestExplorer.RandomForests
         {
             Dictionary<int, string> evaluationData = null;
             double[,] confusionMatrix = null;
-            if (_dataModel.DataType == TreeOutput.ClassifiedCategory)
-            {
-                evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
-                confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
-                foreach (var entry in evaluationData)
-                {
-                    var orignalClass = int.Parse(_dataModel.Instances[entry.Key].Class);
-                    var votedClass = int.Parse(entry.Value);
-                    confusionMatrix[orignalClass, votedClass] += 1;
-                }
-            }
-            else
-            {
-                evaluationData = _forest.EvaluateRegression(_dataModel.Instances, _dataModel.Classes);
-                var yeses = evaluationData.Values.Count(v => v == "yes");
-            }
 
-
+            evaluationData = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes);
+            confusionMatrix = new double[_dataModel.Classes.Count, _dataModel.Classes.Count];
+            foreach (var entry in evaluationData)
+            {
+                var orignalClass = int.Parse(_dataModel.Instances[entry.Key].Class);
+                var votedClass = int.Parse(entry.Value);
+                confusionMatrix[orignalClass, votedClass] += 1;
+            }
             return new Tuple<double[,], Dictionary<int, string>>(confusionMatrix, evaluationData);
         }
 
