@@ -5,6 +5,7 @@ using RandomForestExplorer.Data;
 using RandomForestExplorer.RandomForests;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace RandomForestExplorer
 {
@@ -46,7 +47,7 @@ namespace RandomForestExplorer
                                             1);
 
             _solver.OnForestCompletion = new Action<int>(OnForestCompletion);
-            _solver.OnEvaluationCompletion = new Action<double[,]>(OnEvaluationCompletion);
+            _solver.OnEvaluationCompletion = new Action<Tuple<double[,], Dictionary<int, string>>>(OnEvaluationCompletion);
             _solver.OnProgress = new Action(OnSolverProgress);
             _solver.OnError = (ex) => { _view.Write(string.Format("{0}\n{1}", ex.Message, ex.StackTrace)); };
             _solver.Run();
@@ -77,7 +78,7 @@ namespace RandomForestExplorer
             _view.Write(info);
         }
 
-        private void OnEvaluationCompletion(double[,] confusionMatrix)
+        private void OnEvaluationCompletion(Tuple<double[,], Dictionary<int, string>> tuple)
         {
             var strBld = new StringBuilder("Completed evaluation.\nThe results are:");
             strBld.AppendLine();
@@ -85,6 +86,9 @@ namespace RandomForestExplorer
             strBld.Append("\t=== Confusion Matrix ===");
             strBld.AppendLine();
             strBld.Append("\t\t");
+
+            var confusionMatrix = tuple.Item1;
+            var evaluationData = tuple.Item2;
 
             for (var i = 0; i < confusionMatrix.GetLength(0); i++)
             {
@@ -104,6 +108,13 @@ namespace RandomForestExplorer
             }
 
             _view.Write(strBld.ToString());
+
+            var visual = new Visualization(new Tuple<string [],
+                Dictionary<int, string>,
+                ObservableCollection<Instance>,
+                List<Instance>>(_model.Classes.ToArray(),tuple.Item2,_model.Instances, _model.TrainingInstances));
+
+            visual.ShowDialog(_view);
         }
 
         private void OnFileLoad(string p_fileName)

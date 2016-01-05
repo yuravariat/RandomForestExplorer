@@ -34,7 +34,7 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Public Methods
-        public Action<double[,]> OnEvaluationCompletion { get; set; }
+        public Action<Tuple<double[,], Dictionary<int, string>>> OnEvaluationCompletion { get; set; }
 
         public Action<int> OnForestCompletion { get; set; }
 
@@ -131,7 +131,7 @@ namespace RandomForestExplorer.RandomForests
         /// </summary>
         /// <param name="instances"></param>
         /// <returns></returns>
-        private double[,] BuildConfusionMatrix()
+        private Tuple<double[,], Dictionary<int, string>> BuildConfusionMatrix()
         {
             Dictionary<int, string> evaluationData = null;
             double[,] confusionMatrix = null;
@@ -151,9 +151,9 @@ namespace RandomForestExplorer.RandomForests
                 evaluationData = _forest.EvaluateRegression(_dataModel.Instances, _dataModel.Classes);
                 var yeses = evaluationData.Values.Count(v => v == "yes");
             }
-            
 
-            return confusionMatrix;
+
+            return new Tuple<double[,], Dictionary<int, string>>(confusionMatrix, evaluationData);
         }
 
         /// <summary>
