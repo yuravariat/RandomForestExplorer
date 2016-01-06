@@ -18,24 +18,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.filePathLbl = new System.Windows.Forms.Label();
-            this.openFileBtn = new System.Windows.Forms.Button();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.visualizationContainer = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.trainingGroupBox = new System.Windows.Forms.GroupBox();
-            this.trainingFilePathLbl = new System.Windows.Forms.Label();
-            this.openTrainingFileBtn = new System.Windows.Forms.Button();
-            this.splitFileRb = new System.Windows.Forms.RadioButton();
-            this.loadFileRb = new System.Windows.Forms.RadioButton();
-            this.percentSplitLbl = new System.Windows.Forms.Label();
-            this.percentSplit = new System.Windows.Forms.NumericUpDown();
-            this.numOfFeatures = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.treeDepth = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numOfTrees = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.attributesCountLbl = new System.Windows.Forms.Label();
             this.instancesCountLbl = new System.Windows.Forms.Label();
@@ -43,25 +26,42 @@
             this.attributeLbl = new System.Windows.Forms.Label();
             this.instanceLbl = new System.Windows.Forms.Label();
             this.relationLbl = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.numOfFeatures = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.treeDepth = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.numOfTrees = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.splitFileRb = new System.Windows.Forms.RadioButton();
+            this.percentSplit = new System.Windows.Forms.NumericUpDown();
+            this.loadFileRb = new System.Windows.Forms.RadioButton();
+            this.percentSplitLbl = new System.Windows.Forms.Label();
+            this.trainingFilePathLbl = new System.Windows.Forms.Label();
+            this.filePathLbl = new System.Windows.Forms.Label();
+            this.openTrainingFileBtn = new System.Windows.Forms.Button();
+            this.openFileBtn = new System.Windows.Forms.Button();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.visualizationContainer = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.clearBtn = new System.Windows.Forms.Button();
             this.stopBtn = new System.Windows.Forms.Button();
             this.startBtn = new System.Windows.Forms.Button();
             this.openTrainingFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.textArea = new System.Windows.Forms.RichTextBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.clearBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.trainingGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).BeginInit();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOfTrees)).BeginInit();
-            this.groupBox3.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).BeginInit();
+            this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -83,54 +83,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
-            // filePathLbl
-            // 
-            this.filePathLbl.AutoSize = true;
-            this.filePathLbl.Location = new System.Drawing.Point(139, 17);
-            this.filePathLbl.Name = "filePathLbl";
-            this.filePathLbl.Size = new System.Drawing.Size(131, 13);
-            this.filePathLbl.TabIndex = 1;
-            this.filePathLbl.Text = "Please choose a test file...";
-            // 
-            // openFileBtn
-            // 
-            this.openFileBtn.Location = new System.Drawing.Point(12, 12);
-            this.openFileBtn.Name = "openFileBtn";
-            this.openFileBtn.Size = new System.Drawing.Size(121, 23);
-            this.openFileBtn.TabIndex = 0;
-            this.openFileBtn.Text = "Open Test File ...";
-            this.openFileBtn.UseVisualStyleBackColor = true;
-            this.openFileBtn.Click += new System.EventHandler(this.OpenFileBtnClick);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.Filter = "Weka files|*.arff";
-            // 
-            // visualizationContainer
-            // 
-            this.visualizationContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.visualizationContainer.Location = new System.Drawing.Point(0, 0);
-            this.visualizationContainer.Name = "visualizationContainer";
-            this.visualizationContainer.Size = new System.Drawing.Size(514, 367);
-            this.visualizationContainer.TabIndex = 1;
-            this.visualizationContainer.TabStop = false;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.numOfFeatures);
-            this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Controls.Add(this.treeDepth);
-            this.groupBox4.Controls.Add(this.label2);
-            this.groupBox4.Controls.Add(this.numOfTrees);
-            this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox4.Location = new System.Drawing.Point(200, 16);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(209, 99);
-            this.groupBox4.TabIndex = 1;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Trees Configuration";
-            // 
             // trainingGroupBox
             // 
             this.trainingGroupBox.Controls.Add(this.groupBox3);
@@ -143,136 +95,6 @@
             this.trainingGroupBox.TabIndex = 8;
             this.trainingGroupBox.TabStop = false;
             this.trainingGroupBox.Text = "Training";
-            // 
-            // trainingFilePathLbl
-            // 
-            this.trainingFilePathLbl.AutoSize = true;
-            this.trainingFilePathLbl.Location = new System.Drawing.Point(139, 56);
-            this.trainingFilePathLbl.Name = "trainingFilePathLbl";
-            this.trainingFilePathLbl.Size = new System.Drawing.Size(148, 13);
-            this.trainingFilePathLbl.TabIndex = 10;
-            this.trainingFilePathLbl.Text = "Please choose a training file...";
-            // 
-            // openTrainingFileBtn
-            // 
-            this.openTrainingFileBtn.Location = new System.Drawing.Point(12, 51);
-            this.openTrainingFileBtn.Name = "openTrainingFileBtn";
-            this.openTrainingFileBtn.Size = new System.Drawing.Size(121, 23);
-            this.openTrainingFileBtn.TabIndex = 9;
-            this.openTrainingFileBtn.Text = "Open Training File ...";
-            this.openTrainingFileBtn.UseVisualStyleBackColor = true;
-            this.openTrainingFileBtn.Click += new System.EventHandler(this.OpenTrainingFileBtnClick);
-            // 
-            // splitFileRb
-            // 
-            this.splitFileRb.AutoSize = true;
-            this.splitFileRb.Location = new System.Drawing.Point(6, 40);
-            this.splitFileRb.Name = "splitFileRb";
-            this.splitFileRb.Size = new System.Drawing.Size(64, 17);
-            this.splitFileRb.TabIndex = 8;
-            this.splitFileRb.TabStop = true;
-            this.splitFileRb.Text = "Split File";
-            this.splitFileRb.UseVisualStyleBackColor = true;
-            // 
-            // loadFileRb
-            // 
-            this.loadFileRb.AutoSize = true;
-            this.loadFileRb.Location = new System.Drawing.Point(6, 17);
-            this.loadFileRb.Name = "loadFileRb";
-            this.loadFileRb.Size = new System.Drawing.Size(68, 17);
-            this.loadFileRb.TabIndex = 7;
-            this.loadFileRb.TabStop = true;
-            this.loadFileRb.Text = "Load File";
-            this.loadFileRb.UseVisualStyleBackColor = true;
-            // 
-            // percentSplitLbl
-            // 
-            this.percentSplitLbl.AutoSize = true;
-            this.percentSplitLbl.Location = new System.Drawing.Point(3, 64);
-            this.percentSplitLbl.Name = "percentSplitLbl";
-            this.percentSplitLbl.Size = new System.Drawing.Size(103, 13);
-            this.percentSplitLbl.TabIndex = 5;
-            this.percentSplitLbl.Text = "Percentage split (%):";
-            // 
-            // percentSplit
-            // 
-            this.percentSplit.Location = new System.Drawing.Point(112, 60);
-            this.percentSplit.Name = "percentSplit";
-            this.percentSplit.Size = new System.Drawing.Size(53, 20);
-            this.percentSplit.TabIndex = 6;
-            this.percentSplit.Value = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            // 
-            // numOfFeatures
-            // 
-            this.numOfFeatures.Location = new System.Drawing.Point(110, 64);
-            this.numOfFeatures.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numOfFeatures.Name = "numOfFeatures";
-            this.numOfFeatures.Size = new System.Drawing.Size(53, 20);
-            this.numOfFeatures.TabIndex = 7;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Number of features:";
-            // 
-            // treeDepth
-            // 
-            this.treeDepth.Location = new System.Drawing.Point(110, 40);
-            this.treeDepth.Name = "treeDepth";
-            this.treeDepth.Size = new System.Drawing.Size(53, 20);
-            this.treeDepth.TabIndex = 3;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Tree max depth:";
-            // 
-            // numOfTrees
-            // 
-            this.numOfTrees.Location = new System.Drawing.Point(110, 14);
-            this.numOfTrees.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numOfTrees.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numOfTrees.Name = "numOfTrees";
-            this.numOfTrees.Size = new System.Drawing.Size(53, 20);
-            this.numOfTrees.TabIndex = 1;
-            this.numOfTrees.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Number of trees:";
             // 
             // groupBox3
             // 
@@ -347,6 +169,198 @@
             this.relationLbl.Tag = "Relation: ";
             this.relationLbl.Text = "Relation: ";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.numOfFeatures);
+            this.groupBox4.Controls.Add(this.label3);
+            this.groupBox4.Controls.Add(this.treeDepth);
+            this.groupBox4.Controls.Add(this.label2);
+            this.groupBox4.Controls.Add(this.numOfTrees);
+            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox4.Location = new System.Drawing.Point(200, 16);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(209, 99);
+            this.groupBox4.TabIndex = 1;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Trees Configuration";
+            // 
+            // numOfFeatures
+            // 
+            this.numOfFeatures.Location = new System.Drawing.Point(110, 64);
+            this.numOfFeatures.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numOfFeatures.Name = "numOfFeatures";
+            this.numOfFeatures.Size = new System.Drawing.Size(53, 20);
+            this.numOfFeatures.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Number of features:";
+            // 
+            // treeDepth
+            // 
+            this.treeDepth.Location = new System.Drawing.Point(110, 40);
+            this.treeDepth.Name = "treeDepth";
+            this.treeDepth.Size = new System.Drawing.Size(53, 20);
+            this.treeDepth.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 42);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(84, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Tree max depth:";
+            // 
+            // numOfTrees
+            // 
+            this.numOfTrees.Location = new System.Drawing.Point(110, 14);
+            this.numOfTrees.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numOfTrees.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numOfTrees.Name = "numOfTrees";
+            this.numOfTrees.Size = new System.Drawing.Size(53, 20);
+            this.numOfTrees.TabIndex = 1;
+            this.numOfTrees.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Number of trees:";
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.splitFileRb);
+            this.groupBox7.Controls.Add(this.percentSplit);
+            this.groupBox7.Controls.Add(this.loadFileRb);
+            this.groupBox7.Controls.Add(this.percentSplitLbl);
+            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox7.Location = new System.Drawing.Point(3, 16);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(197, 99);
+            this.groupBox7.TabIndex = 9;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Data Source Configuration";
+            // 
+            // splitFileRb
+            // 
+            this.splitFileRb.AutoSize = true;
+            this.splitFileRb.Location = new System.Drawing.Point(6, 40);
+            this.splitFileRb.Name = "splitFileRb";
+            this.splitFileRb.Size = new System.Drawing.Size(64, 17);
+            this.splitFileRb.TabIndex = 8;
+            this.splitFileRb.TabStop = true;
+            this.splitFileRb.Text = "Split File";
+            this.splitFileRb.UseVisualStyleBackColor = true;
+            // 
+            // percentSplit
+            // 
+            this.percentSplit.Location = new System.Drawing.Point(112, 60);
+            this.percentSplit.Name = "percentSplit";
+            this.percentSplit.Size = new System.Drawing.Size(53, 20);
+            this.percentSplit.TabIndex = 6;
+            this.percentSplit.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            // 
+            // loadFileRb
+            // 
+            this.loadFileRb.AutoSize = true;
+            this.loadFileRb.Location = new System.Drawing.Point(6, 17);
+            this.loadFileRb.Name = "loadFileRb";
+            this.loadFileRb.Size = new System.Drawing.Size(68, 17);
+            this.loadFileRb.TabIndex = 7;
+            this.loadFileRb.TabStop = true;
+            this.loadFileRb.Text = "Load File";
+            this.loadFileRb.UseVisualStyleBackColor = true;
+            // 
+            // percentSplitLbl
+            // 
+            this.percentSplitLbl.AutoSize = true;
+            this.percentSplitLbl.Location = new System.Drawing.Point(3, 64);
+            this.percentSplitLbl.Name = "percentSplitLbl";
+            this.percentSplitLbl.Size = new System.Drawing.Size(103, 13);
+            this.percentSplitLbl.TabIndex = 5;
+            this.percentSplitLbl.Text = "Percentage split (%):";
+            // 
+            // trainingFilePathLbl
+            // 
+            this.trainingFilePathLbl.AutoSize = true;
+            this.trainingFilePathLbl.Location = new System.Drawing.Point(139, 56);
+            this.trainingFilePathLbl.Name = "trainingFilePathLbl";
+            this.trainingFilePathLbl.Size = new System.Drawing.Size(148, 13);
+            this.trainingFilePathLbl.TabIndex = 10;
+            this.trainingFilePathLbl.Text = "Please choose a training file...";
+            // 
+            // filePathLbl
+            // 
+            this.filePathLbl.AutoSize = true;
+            this.filePathLbl.Location = new System.Drawing.Point(139, 17);
+            this.filePathLbl.Name = "filePathLbl";
+            this.filePathLbl.Size = new System.Drawing.Size(131, 13);
+            this.filePathLbl.TabIndex = 1;
+            this.filePathLbl.Text = "Please choose a test file...";
+            // 
+            // openTrainingFileBtn
+            // 
+            this.openTrainingFileBtn.Location = new System.Drawing.Point(12, 51);
+            this.openTrainingFileBtn.Name = "openTrainingFileBtn";
+            this.openTrainingFileBtn.Size = new System.Drawing.Size(121, 23);
+            this.openTrainingFileBtn.TabIndex = 9;
+            this.openTrainingFileBtn.Text = "Open Training File ...";
+            this.openTrainingFileBtn.UseVisualStyleBackColor = true;
+            this.openTrainingFileBtn.Click += new System.EventHandler(this.OpenTrainingFileBtnClick);
+            // 
+            // openFileBtn
+            // 
+            this.openFileBtn.Location = new System.Drawing.Point(12, 12);
+            this.openFileBtn.Name = "openFileBtn";
+            this.openFileBtn.Size = new System.Drawing.Size(121, 23);
+            this.openFileBtn.TabIndex = 0;
+            this.openFileBtn.Text = "Open Test File ...";
+            this.openFileBtn.UseVisualStyleBackColor = true;
+            this.openFileBtn.Click += new System.EventHandler(this.OpenFileBtnClick);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "Weka files|*.arff";
+            // 
+            // visualizationContainer
+            // 
+            this.visualizationContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.visualizationContainer.Location = new System.Drawing.Point(0, 0);
+            this.visualizationContainer.Name = "visualizationContainer";
+            this.visualizationContainer.Size = new System.Drawing.Size(514, 367);
+            this.visualizationContainer.TabIndex = 1;
+            this.visualizationContainer.TabStop = false;
+            // 
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.progressBar);
@@ -369,6 +383,17 @@
             this.progressBar.Step = 5;
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 3;
+            // 
+            // clearBtn
+            // 
+            this.clearBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.clearBtn.Location = new System.Drawing.Point(153, 16);
+            this.clearBtn.Name = "clearBtn";
+            this.clearBtn.Size = new System.Drawing.Size(75, 27);
+            this.clearBtn.TabIndex = 4;
+            this.clearBtn.Text = "Clear";
+            this.clearBtn.UseVisualStyleBackColor = true;
+            this.clearBtn.Click += new System.EventHandler(this.OnClearBtnClick);
             // 
             // stopBtn
             // 
@@ -408,20 +433,6 @@
             this.textArea.TabIndex = 0;
             this.textArea.Text = "";
             // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.splitFileRb);
-            this.groupBox7.Controls.Add(this.percentSplit);
-            this.groupBox7.Controls.Add(this.loadFileRb);
-            this.groupBox7.Controls.Add(this.percentSplitLbl);
-            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox7.Location = new System.Drawing.Point(3, 16);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(197, 99);
-            this.groupBox7.TabIndex = 9;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Data Source Configuration";
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -439,17 +450,6 @@
             this.splitContainer1.SplitterDistance = 411;
             this.splitContainer1.TabIndex = 4;
             // 
-            // clearBtn
-            // 
-            this.clearBtn.Dock = System.Windows.Forms.DockStyle.Left;
-            this.clearBtn.Location = new System.Drawing.Point(153, 16);
-            this.clearBtn.Name = "clearBtn";
-            this.clearBtn.Size = new System.Drawing.Size(75, 27);
-            this.clearBtn.TabIndex = 4;
-            this.clearBtn.Text = "Clear";
-            this.clearBtn.UseVisualStyleBackColor = true;
-            this.clearBtn.Click += new System.EventHandler(this.OnClearBtnClick);
-            // 
             // Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -459,21 +459,23 @@
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox1);
             this.Name = "Explorer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Random Forest Explorer";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.trainingGroupBox.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            this.trainingGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOfFeatures)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.treeDepth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOfTrees)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.percentSplit)).EndInit();
+            this.groupBox5.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();

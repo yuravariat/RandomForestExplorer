@@ -41,7 +41,6 @@ namespace RandomForestExplorer
         {
             InitializeComponent();
             _model = p_model;
-            Bind();
         }
 
         public void Write(string p_text)
@@ -161,6 +160,12 @@ namespace RandomForestExplorer
                 _model = null;
             }
             base.Dispose(p_disposing);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            Bind();
         }
     }
 }
