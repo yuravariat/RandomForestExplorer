@@ -80,7 +80,7 @@ namespace RandomForestExplorer
                 _solver.GetNumOfFeatures(),
                 _model.TotalFeatures);
 
-            var strBld = new StringBuilder("\t\n=== Most important features ===\n");
+            var strBld = new StringBuilder("\t\n=== Features by importance ===\n");
             var sortedFeatures = _solver.GetFeautesSortedByImportance();
             foreach (var feature in sortedFeatures)
             {
