@@ -125,6 +125,11 @@ namespace RandomForestExplorer
                 OnStop();
         }
 
+        private void OnClearBtnClick(object sender, EventArgs e)
+        {
+            textArea.Clear();
+        }
+
         private void OpenFileBtnClick(object p_sender, EventArgs p_eventArgs)
         {
             if (openFileDialog.ShowDialog()==DialogResult.OK)

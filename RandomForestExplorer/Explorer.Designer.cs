@@ -51,6 +51,7 @@
             this.textArea = new System.Windows.Forms.RichTextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.clearBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.trainingGroupBox.SuspendLayout();
@@ -349,6 +350,7 @@
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.progressBar);
+            this.groupBox5.Controls.Add(this.clearBtn);
             this.groupBox5.Controls.Add(this.stopBtn);
             this.groupBox5.Controls.Add(this.startBtn);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
@@ -361,9 +363,9 @@
             // progressBar
             // 
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.progressBar.Location = new System.Drawing.Point(153, 16);
+            this.progressBar.Location = new System.Drawing.Point(228, 16);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(773, 27);
+            this.progressBar.Size = new System.Drawing.Size(698, 27);
             this.progressBar.Step = 5;
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 3;
@@ -437,6 +439,17 @@
             this.splitContainer1.SplitterDistance = 411;
             this.splitContainer1.TabIndex = 4;
             // 
+            // clearBtn
+            // 
+            this.clearBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.clearBtn.Location = new System.Drawing.Point(153, 16);
+            this.clearBtn.Name = "clearBtn";
+            this.clearBtn.Size = new System.Drawing.Size(75, 27);
+            this.clearBtn.TabIndex = 4;
+            this.clearBtn.Text = "Clear";
+            this.clearBtn.UseVisualStyleBackColor = true;
+            this.clearBtn.Click += new System.EventHandler(this.OnClearBtnClick);
+            // 
             // Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,6 +518,7 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button clearBtn;
     }
 }
 
