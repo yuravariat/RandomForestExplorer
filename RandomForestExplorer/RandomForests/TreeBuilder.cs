@@ -36,7 +36,7 @@ namespace RandomForestExplorer.RandomForests
             {
                 DecisionTree tree = new DecisionTree();
                 tree.OutputType = _model.DataType;
-                _minimumInastancesInNode =  (int)(_model.Instances.Count * 0.003); // 0.03% of the data.
+                _minimumInastancesInNode =  (int)(_model.Instances.Count * 0.02); // 2% of the data.
 
                 var watch = Stopwatch.StartNew();
                 var clonedList = new List<Instance>(from instance in _model.Instances select instance.Clone());
