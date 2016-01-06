@@ -83,7 +83,7 @@ namespace RandomForestExplorer
                 var classification = result.Value;
 
                 if (!classValues.ContainsKey(classification))
-                    classValues.Add(instance.Class, new List<KeyValuePair<double, double>>());
+                    classValues.Add(classification, new List<KeyValuePair<double, double>>());
 
                 classValues[classification].Add(new KeyValuePair<double, double>(instance.Values[0], instance.Values[1]));
             }
