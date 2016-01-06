@@ -124,7 +124,7 @@ namespace RandomForestExplorer.RandomForests
                 }
                 foreach(var f in _dataModel.Features)
                 {
-                    if (!counts.ContainsKey(f.ID))
+                    if (!counts.ContainsKey(f.ID - 1))
                     {
                         counts.Add(f.ID, 1);
                     }
