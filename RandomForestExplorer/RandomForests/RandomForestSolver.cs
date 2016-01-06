@@ -81,6 +81,51 @@ namespace RandomForestExplorer.RandomForests
         {
             _dataModel = null;
         }
+        /// <summary>
+        /// Get feutures sorted by importance
+        /// </summary>
+        /// <returns> Sorted List each Tuple-int int- is feauture id, feature order</returns>
+        public List<Tuple<int, int>> GetFeautesSortedByImportance()
+        {
+            List<Tuple<int, int>> result = new List<Tuple<int, int>>();
+            if(_forest.Trees!=null && _forest.Trees.Count > 0)
+            {
+                Dictionary<int, int> counts = new Dictionary<int, int>();
+
+                foreach(var tree in _forest.Trees)
+                {
+                    if (tree.RootNode != null)
+                    {
+                        if (!counts.ContainsKey(tree.RootNode.Item.SplitFeatureIndex))
+                        {
+                            counts.Add(tree.RootNode.Item.SplitFeatureIndex, 2);
+                        }
+                        else
+                        {
+                            counts[tree.RootNode.Item.SplitFeatureIndex] += 2;
+                        }
+                        foreach(var node in tree.RootNode.Children())
+                        {
+                            if (tree.RootNode != null)
+                            {
+                                if (!counts.ContainsKey(node.Item.SplitFeatureIndex))
+                                {
+                                    counts.Add(node.Item.SplitFeatureIndex, 1);
+                                }
+                                else
+                                {
+                                    counts[node.Item.SplitFeatureIndex]++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                result = counts.Select(v => new Tuple<int, int>(v.Key, v.Value)).OrderBy(t => t.Item2).ToList();
+            }
+            
+            return result;
+        }
         #endregion
 
         #region Private Members
