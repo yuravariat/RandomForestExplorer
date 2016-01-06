@@ -78,7 +78,7 @@ namespace RandomForestExplorer
                 _solver.GetTreeCount(), 
                 _solver.GetTreeDepth()==int.MaxValue ? "unlimited" : _solver.GetTreeDepth().ToString(), 
                 _solver.GetNumOfFeatures(),
-                _model.Features.Count);
+                _model.TotalFeatures);
 
             var strBld = new StringBuilder("\t\n=== Most important features ===\n");
             var sortedFeatures = _solver.GetFeautesSortedByImportance();
