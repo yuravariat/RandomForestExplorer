@@ -95,7 +95,13 @@ namespace RandomForestExplorer.DecisionTrees
                 yield return child;
             }
         }
-
+        public static IEnumerable<ITreeNode<T>> ElementsAfterSelf<T>(this ITreeNode<T> adapter)
+        {
+            foreach (var child in adapter.Elements())
+            {
+                yield return child;
+            }
+        }
         #endregion
 
         #region Method which take type parameters
