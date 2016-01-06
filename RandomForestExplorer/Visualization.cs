@@ -66,26 +66,28 @@ namespace RandomForestExplorer
                                    Dictionary<int, string> testResults,
                                    ObservableCollection<Instance> testInstances)
         {
-            var seriesMap = new Dictionary<string, Series>();
-
-            foreach (var @class in classes)
-            {
-                seriesMap.Add(@class, new Series(@class)
-                {
-                    ChartType = SeriesChartType.FastPoint
-                });
-            }
-
             var classValues = new Dictionary<string, List<KeyValuePair<double, double>>>();
             foreach (var result in testResults)
             {
                 var instance = testInstances[result.Key];
                 var classification = result.Value;
 
+                if (!instance.Class.Equals(classification))
+                    classification = string.Format("{0} misclassified as {1}", instance.Class, classification);
+
                 if (!classValues.ContainsKey(classification))
                     classValues.Add(classification, new List<KeyValuePair<double, double>>());
 
                 classValues[classification].Add(new KeyValuePair<double, double>(instance.Values[0], instance.Values[1]));
+            }
+
+            var seriesMap = new Dictionary<string, Series>();
+            foreach (var @class in classValues.Keys)
+            {
+                seriesMap.Add(@class, new Series(@class)
+                {
+                    ChartType = SeriesChartType.FastPoint
+                });
             }
 
             foreach (var keyValuePair in classValues)
