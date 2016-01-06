@@ -126,7 +126,7 @@ namespace RandomForestExplorer.RandomForests
                 {
                     if (!counts.ContainsKey(f.ID - 1))
                     {
-                        counts.Add(f.ID, 1);
+                        counts.Add(f.ID-1, 1);
                     }
                 }
 
