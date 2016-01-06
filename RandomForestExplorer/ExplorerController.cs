@@ -40,6 +40,8 @@ namespace RandomForestExplorer
             _view.ProgressBar.Minimum = 0;
             _view.ProgressBar.Maximum = _view.NumberOfTrees;
 
+            _view.RemoveVisualization();
+
             _solver = new RandomForestSolver(_model,
                                             _view.NumberOfTrees, 
                                             _view.NumberOfFeatures,
@@ -126,7 +128,7 @@ namespace RandomForestExplorer
                 List<Instance>>(_model.Classes.ToArray(),tuple.Item2,_model.Instances, _model.TrainingInstances));
 
             //visual.ShowDialog(_view);
-            _view.ShowVisualization(visual);
+            _view.AddVisualization(visual);
         }
         private void OnEvaluationCompletionRegression(Dictionary<int, Tuple<bool, double>> results)
         {

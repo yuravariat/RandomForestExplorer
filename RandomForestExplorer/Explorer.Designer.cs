@@ -165,7 +165,7 @@
             // splitFileRb
             // 
             this.splitFileRb.AutoSize = true;
-            this.splitFileRb.Location = new System.Drawing.Point(6, 19);
+            this.splitFileRb.Location = new System.Drawing.Point(6, 40);
             this.splitFileRb.Name = "splitFileRb";
             this.splitFileRb.Size = new System.Drawing.Size(64, 17);
             this.splitFileRb.TabIndex = 8;
@@ -176,7 +176,7 @@
             // loadFileRb
             // 
             this.loadFileRb.AutoSize = true;
-            this.loadFileRb.Location = new System.Drawing.Point(6, 67);
+            this.loadFileRb.Location = new System.Drawing.Point(6, 17);
             this.loadFileRb.Name = "loadFileRb";
             this.loadFileRb.Size = new System.Drawing.Size(68, 17);
             this.loadFileRb.TabIndex = 7;
@@ -187,7 +187,7 @@
             // percentSplitLbl
             // 
             this.percentSplitLbl.AutoSize = true;
-            this.percentSplitLbl.Location = new System.Drawing.Point(5, 42);
+            this.percentSplitLbl.Location = new System.Drawing.Point(3, 64);
             this.percentSplitLbl.Name = "percentSplitLbl";
             this.percentSplitLbl.Size = new System.Drawing.Size(103, 13);
             this.percentSplitLbl.TabIndex = 5;
@@ -195,7 +195,7 @@
             // 
             // percentSplit
             // 
-            this.percentSplit.Location = new System.Drawing.Point(114, 40);
+            this.percentSplit.Location = new System.Drawing.Point(112, 60);
             this.percentSplit.Name = "percentSplit";
             this.percentSplit.Size = new System.Drawing.Size(53, 20);
             this.percentSplit.TabIndex = 6;
