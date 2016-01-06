@@ -12,7 +12,6 @@ namespace RandomForestExplorer.RandomForests
         #region Members
         private DataModel _model;
         private Random _random;
-        //private Randomizer _randomizer;
         private int _seed;
         private int _treeDepth;
         private int _numOfFeatures;
@@ -21,14 +20,12 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Constructor
-        public TreeBuilder(DataModel model, int numOfFeatures, int seed, int depth)
+        public TreeBuilder(DataModel model, Random random, int numOfFeatures, int depth)
         {
             _model = model;
-            _seed = seed;
             _treeDepth = depth;
             _numOfFeatures = numOfFeatures;
-            //_randomizer = new Randomizer();
-            _random = new Random(_seed);
+            _random = random;
         }
         #endregion
 
