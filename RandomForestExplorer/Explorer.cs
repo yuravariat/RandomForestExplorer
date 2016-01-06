@@ -55,6 +55,11 @@ namespace RandomForestExplorer
             });
         }
 
+        public void ShowVisualization(Visualization visual)
+        {
+            this.visualizationContainer.Controls.Add(visual);
+        }
+
         #region Bindings
         private void Bind()
         {

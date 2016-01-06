@@ -13,7 +13,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace RandomForestExplorer
 {
-    public partial class Visualization : Form
+    public partial class Visualization : UserControl
     {
         public Visualization(Tuple<string [], 
                              Dictionary<int, string>, 
@@ -21,6 +21,7 @@ namespace RandomForestExplorer
                              List<Instance>> tuple)
         {
             InitializeComponent();
+            Dock = DockStyle.Fill;
             InitTrainingChart(tuple.Item1, tuple.Item4);
             InitTestChart(tuple.Item1, tuple.Item2, tuple.Item3);
         }
