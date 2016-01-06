@@ -76,7 +76,15 @@ namespace RandomForestExplorer
                 _solver.GetTreeCount(), 
                 _solver.GetTreeDepth()==int.MaxValue ? "unlimited" : _solver.GetTreeDepth().ToString(), 
                 _solver.GetNumOfFeatures());
-            _view.Write(info);
+
+            var strBld = new StringBuilder("\t\nFeautes sorted by importance:\n");
+            var sortedFeatures = _solver.GetFeautesSortedByImportance();
+            foreach (var feature in sortedFeatures)
+            {
+                strBld.AppendLine("a" + (feature.Item1 + 1));
+            }
+
+            _view.Write(info + strBld.ToString());
         }
 
         private void OnEvaluationCompletion(Tuple<double[,], Dictionary<int, string>> tuple)
