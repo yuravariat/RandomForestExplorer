@@ -17,9 +17,9 @@ namespace RandomForestExplorer.RandomForests
         private readonly int _numOfTreesToTest;
         private readonly int _numOfFeatures;
         private int _treeDepth;
-        private readonly int _seed;
         private RandomForest _forest;
         private CancellationTokenSource _source;
+        private Random _random;
         #endregion
 
         #region Constructor
@@ -30,8 +30,8 @@ namespace RandomForestExplorer.RandomForests
             _numOfTreesToTest = p_numOfTreesToTest;
             _numOfFeatures = AdjustNumOfFeatures(p_numOfFeatures);
             _treeDepth = AdjustTreeDepth(p_treeDepth);
-            _seed = p_seed;
             _source = new CancellationTokenSource();
+            _random = new Random(p_seed);
         }
         #endregion
 
@@ -188,7 +188,7 @@ namespace RandomForestExplorer.RandomForests
         /// <returns></returns>
         private DecisionTree BuildTree()
         {
-            return new TreeBuilder(_dataModel, _numOfFeatures, _seed, _treeDepth).Build();
+            return new TreeBuilder(_dataModel, _random, _numOfFeatures, _treeDepth).Build();
         }
 
         /// <summary>
