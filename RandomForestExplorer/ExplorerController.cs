@@ -123,7 +123,8 @@ namespace RandomForestExplorer
                 ObservableCollection<Instance>,
                 List<Instance>>(_model.Classes.ToArray(),tuple.Item2,_model.Instances, _model.TrainingInstances));
 
-            visual.ShowDialog(_view);
+            //visual.ShowDialog(_view);
+            _view.ShowVisualization(visual);
         }
         private void OnEvaluationCompletionRegression(Dictionary<int, Tuple<bool, double>> results)
         {
