@@ -106,7 +106,7 @@ namespace RandomForestExplorer.RandomForests
                         }
                         foreach(var node in tree.RootNode.Children())
                         {
-                            if (tree.RootNode != null)
+                            if (node != null)
                             {
                                 if (!counts.ContainsKey(node.Item.SplitFeatureIndex))
                                 {
@@ -118,6 +118,13 @@ namespace RandomForestExplorer.RandomForests
                                 }
                             }
                         }
+                    }
+                }
+                foreach(var f in _dataModel.Features)
+                {
+                    if (!counts.ContainsKey(f.ID))
+                    {
+                        counts.Add(f.ID, 1);
                     }
                 }
 
@@ -209,7 +216,7 @@ namespace RandomForestExplorer.RandomForests
         }
 
         /// <summary>
-        /// Adjusts the number of features based on: Log2(total features) + 1
+        /// Adjusts the number of features based on: Log2(total features)
         /// When the value is 0, using this formula, otherwise using user's choice
         /// </summary>
         /// <param name="p_numOfFeatures"></param>
@@ -219,7 +226,7 @@ namespace RandomForestExplorer.RandomForests
             if (p_numOfFeatures > 0)
                 return p_numOfFeatures;
 
-            return (int)Math.Log(_dataModel.TotalFeatures, 2) + 1;
+            return (int)Math.Log(_dataModel.TotalFeatures, 2);
         }
 
         /// <summary>
