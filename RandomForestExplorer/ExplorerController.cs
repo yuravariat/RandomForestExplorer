@@ -43,7 +43,8 @@ namespace RandomForestExplorer
             _view.RemoveVisualization();
 
             _solver = new RandomForestSolver(_model,
-                                            _view.NumberOfTrees, 
+                                            _view.NumberOfTrees,
+                                            _view.NumberOfTreesToTest,
                                             _view.NumberOfFeatures,
                                             _view.TreeDepth,
                                             1);

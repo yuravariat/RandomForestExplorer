@@ -52,6 +52,8 @@
             this.openTrainingFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.textArea = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label4 = new System.Windows.Forms.Label();
+            this.numOfTreesToTest = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.trainingGroupBox.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -66,6 +68,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numOfTreesToTest)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -79,7 +82,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(929, 208);
+            this.groupBox1.Size = new System.Drawing.Size(929, 230);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -89,9 +92,9 @@
             this.trainingGroupBox.Controls.Add(this.groupBox4);
             this.trainingGroupBox.Controls.Add(this.groupBox7);
             this.trainingGroupBox.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.trainingGroupBox.Location = new System.Drawing.Point(3, 87);
+            this.trainingGroupBox.Location = new System.Drawing.Point(3, 80);
             this.trainingGroupBox.Name = "trainingGroupBox";
-            this.trainingGroupBox.Size = new System.Drawing.Size(923, 118);
+            this.trainingGroupBox.Size = new System.Drawing.Size(923, 147);
             this.trainingGroupBox.TabIndex = 8;
             this.trainingGroupBox.TabStop = false;
             this.trainingGroupBox.Text = "Training";
@@ -107,7 +110,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(409, 16);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(511, 99);
+            this.groupBox3.Size = new System.Drawing.Size(511, 128);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Current Relation";
@@ -171,6 +174,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.numOfTreesToTest);
+            this.groupBox4.Controls.Add(this.label4);
             this.groupBox4.Controls.Add(this.numOfFeatures);
             this.groupBox4.Controls.Add(this.label3);
             this.groupBox4.Controls.Add(this.treeDepth);
@@ -180,14 +185,14 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox4.Location = new System.Drawing.Point(200, 16);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(209, 99);
+            this.groupBox4.Size = new System.Drawing.Size(209, 128);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Trees Configuration";
             // 
             // numOfFeatures
             // 
-            this.numOfFeatures.Location = new System.Drawing.Point(110, 64);
+            this.numOfFeatures.Location = new System.Drawing.Point(130, 62);
             this.numOfFeatures.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -208,7 +213,7 @@
             // 
             // treeDepth
             // 
-            this.treeDepth.Location = new System.Drawing.Point(110, 40);
+            this.treeDepth.Location = new System.Drawing.Point(130, 37);
             this.treeDepth.Name = "treeDepth";
             this.treeDepth.Size = new System.Drawing.Size(53, 20);
             this.treeDepth.TabIndex = 3;
@@ -224,7 +229,7 @@
             // 
             // numOfTrees
             // 
-            this.numOfTrees.Location = new System.Drawing.Point(110, 14);
+            this.numOfTrees.Location = new System.Drawing.Point(130, 13);
             this.numOfTrees.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -262,7 +267,7 @@
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox7.Location = new System.Drawing.Point(3, 16);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(197, 99);
+            this.groupBox7.Size = new System.Drawing.Size(197, 128);
             this.groupBox7.TabIndex = 9;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Data Source Configuration";
@@ -357,7 +362,7 @@
             this.visualizationContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.visualizationContainer.Location = new System.Drawing.Point(0, 0);
             this.visualizationContainer.Name = "visualizationContainer";
-            this.visualizationContainer.Size = new System.Drawing.Size(514, 367);
+            this.visualizationContainer.Size = new System.Drawing.Size(514, 345);
             this.visualizationContainer.TabIndex = 1;
             this.visualizationContainer.TabStop = false;
             // 
@@ -368,7 +373,7 @@
             this.groupBox5.Controls.Add(this.stopBtn);
             this.groupBox5.Controls.Add(this.startBtn);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(0, 208);
+            this.groupBox5.Location = new System.Drawing.Point(0, 230);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(929, 46);
             this.groupBox5.TabIndex = 2;
@@ -429,14 +434,14 @@
             this.textArea.Location = new System.Drawing.Point(0, 0);
             this.textArea.Name = "textArea";
             this.textArea.ReadOnly = true;
-            this.textArea.Size = new System.Drawing.Size(411, 367);
+            this.textArea.Size = new System.Drawing.Size(411, 345);
             this.textArea.TabIndex = 0;
             this.textArea.Text = "";
             // 
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 254);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 276);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -446,9 +451,35 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.visualizationContainer);
-            this.splitContainer1.Size = new System.Drawing.Size(929, 367);
+            this.splitContainer1.Size = new System.Drawing.Size(929, 345);
             this.splitContainer1.SplitterDistance = 411;
             this.splitContainer1.TabIndex = 4;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 91);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(117, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Number of trees to test:";
+            // 
+            // numOfTreesToTest
+            // 
+            this.numOfTreesToTest.Location = new System.Drawing.Point(130, 88);
+            this.numOfTreesToTest.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numOfTreesToTest.Name = "numOfTreesToTest";
+            this.numOfTreesToTest.Size = new System.Drawing.Size(53, 20);
+            this.numOfTreesToTest.TabIndex = 9;
+            this.numOfTreesToTest.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             // 
             // Explorer
             // 
@@ -480,6 +511,7 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numOfTreesToTest)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -521,6 +553,8 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button clearBtn;
+        private System.Windows.Forms.NumericUpDown numOfTreesToTest;
+        private System.Windows.Forms.Label label4;
     }
 }
 

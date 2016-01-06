@@ -9,10 +9,12 @@ namespace RandomForestExplorer.RandomForests
 {
     class RandomForest
     {
+        private int _numOfTreesToTest;
         public ConcurrentBag<DecisionTree> Trees { get; private set; }
 
-        public RandomForest()
+        public RandomForest(int numOfTreesToTest)
         {
+            _numOfTreesToTest = numOfTreesToTest;
             Trees = new ConcurrentBag<DecisionTree>();
         }
 
@@ -115,8 +117,12 @@ namespace RandomForestExplorer.RandomForests
         }
         public void EvaluateTrees(List<ClassificationInstance> instanceData)
         {
+            var treesCount = 0;
             foreach (var tree in Trees)
             {
+                if (treesCount == _numOfTreesToTest)
+                    break;
+
                 foreach (var instanceEntry in instanceData)
                 {
                     if (tree.OutputType == TreeOutput.ClassifiedCategory)
@@ -128,6 +134,8 @@ namespace RandomForestExplorer.RandomForests
                         EvaluateNodeRegression(tree.RootNode, instanceEntry);
                     }
                 }
+
+                treesCount++;
             }
         }
         public void EvaluateNode(ITreeNode<DecisionNode> node, ClassificationInstance instanceValue)

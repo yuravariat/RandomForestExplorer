@@ -17,6 +17,11 @@ namespace RandomForestExplorer
             get { return (int) numOfTrees.Value; }
         }
 
+        public int NumberOfTreesToTest
+        {
+            get { return (int)numOfTreesToTest.Value; }
+        }
+
         public int TreeDepth
         {
             get { return (int)treeDepth.Value; }

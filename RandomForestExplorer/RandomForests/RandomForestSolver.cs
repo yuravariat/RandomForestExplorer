@@ -14,6 +14,7 @@ namespace RandomForestExplorer.RandomForests
         #region Private Members
         private DataModel _dataModel;
         private readonly int _numOfTrees;
+        private readonly int _numOfTreesToTest;
         private readonly int _numOfFeatures;
         private int _treeDepth;
         private readonly int _seed;
@@ -22,10 +23,11 @@ namespace RandomForestExplorer.RandomForests
         #endregion
 
         #region Constructor
-        public RandomForestSolver(DataModel p_dataModel, int p_numOfTrees, int p_numOfFeatures, int p_treeDepth, int p_seed)
+        public RandomForestSolver(DataModel p_dataModel, int p_numOfTrees, int p_numOfTreesToTest, int p_numOfFeatures, int p_treeDepth, int p_seed)
         {
             _dataModel = p_dataModel;
             _numOfTrees = p_numOfTrees;
+            _numOfTreesToTest = p_numOfTreesToTest;
             _numOfFeatures = AdjustNumOfFeatures(p_numOfFeatures);
             _treeDepth = AdjustTreeDepth(p_treeDepth);
             _seed = p_seed;
@@ -45,7 +47,7 @@ namespace RandomForestExplorer.RandomForests
 
         public void Run()
         {
-            _forest = new RandomForest();
+            _forest = new RandomForest(_numOfTreesToTest);
             //all trees are built asynchronously
             for (var i = 0; i < _numOfTrees; i++)
             {
