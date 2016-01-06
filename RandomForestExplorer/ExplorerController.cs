@@ -71,18 +71,20 @@ namespace RandomForestExplorer
             _model.InProcess = false;
 
             var message = "Completed training";
-            var info = string.Format("{0}\nTotal trees: {1}\nTree Depth: {2}\nTotal Features: {3}",
+            var info = string.Format("{0}\nTotal trees: {1}\nTree Depth: {2}\nRandom Features used: {3}\nTotal Features: {4}",
                 message, 
                 _solver.GetTreeCount(), 
                 _solver.GetTreeDepth()==int.MaxValue ? "unlimited" : _solver.GetTreeDepth().ToString(), 
-                _solver.GetNumOfFeatures());
+                _solver.GetNumOfFeatures(),
+                _model.Features.Count);
 
-            var strBld = new StringBuilder("\t\nFeautes sorted by importance:\n");
+            var strBld = new StringBuilder("\t\n=== Most important features ===\n");
             var sortedFeatures = _solver.GetFeautesSortedByImportance();
             foreach (var feature in sortedFeatures)
             {
                 strBld.AppendLine("a" + (feature.Item1 + 1));
             }
+            strBld.AppendLine();
 
             _view.Write(info + strBld.ToString());
         }
