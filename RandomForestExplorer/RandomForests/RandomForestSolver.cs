@@ -135,6 +135,51 @@ namespace RandomForestExplorer.RandomForests
             
             return result;
         }
+        public Dictionary<int, double> CreateErrorMatrix()
+        {
+            Dictionary<int, double> matrix = new Dictionary<int, double>();
+            List<Tuple<int, int>> result = new List<Tuple<int, int>>();
+
+            var primaryNumbers = new int[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
+                53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149,
+                151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199 };
+
+            foreach (var prNumber in primaryNumbers)
+            {
+                if (prNumber > _forest.Trees.Count)
+                {
+                    break;
+                }
+                if (_dataModel.DataType == TreeOutput.ClassifiedCategory)
+                {
+                    var res = _forest.Evaluate(_dataModel.Instances, _dataModel.Classes, numberOfTreesTotest: prNumber);
+                    int truePositive = 0;
+                    for(int j=0;j < _dataModel.Instances.Count; j++)
+                    {
+                        if (_dataModel.Instances[j].Class == res[j])
+                        {
+                            truePositive++;
+                        }
+                    }
+                    matrix.Add(prNumber, 1 - ((double)truePositive / (double)_dataModel.Instances.Count));
+                }
+                else
+                {
+                    var res = _forest.EvaluateRegression(_dataModel.Instances, numberOfTreesTotest: prNumber);
+                    int truePositive = 0;
+                    foreach (var inst in res)
+                    {
+                        if (inst.Value.Item1)
+                        {
+                            truePositive++;
+                        }
+                    }
+                    matrix.Add(prNumber, 1 - ((double)truePositive / (double)_dataModel.Instances.Count));
+                }
+            }
+
+            return matrix;
+        }
         #endregion
 
         #region Private Members

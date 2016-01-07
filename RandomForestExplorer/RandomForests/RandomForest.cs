@@ -18,10 +18,10 @@ namespace RandomForestExplorer.RandomForests
             Trees = new ConcurrentBag<DecisionTree>();
         }
 
-        public Dictionary<int, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes)
+        public Dictionary<int, string> Evaluate(ObservableCollection<Instance> instances, ObservableCollection<string> classes, int? numberOfTreesTotest=null)
         {
             //########### Evaluate Instances #############
-            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.ClassifiedCategory, classes);
+            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.ClassifiedCategory, classes, numberOfTreesTotest);
 
             //########### Summarize ###########
             var result = new Dictionary<int, string>();
@@ -63,10 +63,10 @@ namespace RandomForestExplorer.RandomForests
             return result;
         }
 
-        public Dictionary<int, Tuple<bool,double>> EvaluateRegression(ObservableCollection<Instance> instances)
+        public Dictionary<int, Tuple<bool,double>> EvaluateRegression(ObservableCollection<Instance> instances, int? numberOfTreesTotest = null)
         {
             //########### Evaluate Instances #############
-            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.Regression);
+            List<ClassificationInstance> instanceData = EvaluateInstances(instances, TreeOutput.Regression, numberOfTreesTotest: numberOfTreesTotest);
 
             //########### Summarize ###########
             var result = new Dictionary<int, Tuple<bool, double>>();
@@ -92,7 +92,7 @@ namespace RandomForestExplorer.RandomForests
 
             return result;
         }
-        private List<ClassificationInstance> EvaluateInstances(ObservableCollection<Instance> instances, TreeOutput treeType, ObservableCollection<string> classes = null)
+        private List<ClassificationInstance> EvaluateInstances(ObservableCollection<Instance> instances, TreeOutput treeType, ObservableCollection<string> classes = null, int? numberOfTreesTotest = null)
         {
             //########### Prepare #############
             List<ClassificationInstance> instanceData = new List<ClassificationInstance>();
@@ -111,16 +111,17 @@ namespace RandomForestExplorer.RandomForests
 
             //########### Evaluate ############
             //run each instance value evaluation for all forest trees (N features * M trees * X instances)
-            EvaluateTrees(instanceData);
+            EvaluateTrees(instanceData,numberOfTreesTotest);
 
             return instanceData;
         }
-        public void EvaluateTrees(List<ClassificationInstance> instanceData)
+        public void EvaluateTrees(List<ClassificationInstance> instanceData, int? numberOfTreesTotest = null)
         {
             var treesCount = 0;
+            var numberOfTreesToTestInst = numberOfTreesTotest.HasValue ? numberOfTreesTotest.Value : _numOfTreesToTest;
             foreach (var tree in Trees)
             {
-                if (treesCount == _numOfTreesToTest)
+                if (treesCount == numberOfTreesToTestInst)
                     break;
 
                 foreach (var instanceEntry in instanceData)
