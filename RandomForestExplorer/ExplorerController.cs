@@ -89,6 +89,9 @@ namespace RandomForestExplorer
             }
             strBld.AppendLine();
 
+            // Error Matrix Uncomment if you want to create CSV file with error rate with number of tree test. 
+            ////var test = _solver.CreateErrorMatrix();
+
             _view.Write(info + strBld.ToString());
         }
 
