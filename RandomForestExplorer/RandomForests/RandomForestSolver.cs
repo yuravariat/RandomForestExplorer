@@ -177,7 +177,8 @@ namespace RandomForestExplorer.RandomForests
                     matrix.Add(prNumber, 1 - ((double)truePositive / (double)_dataModel.Instances.Count));
                 }
             }
-
+            var fileName = System.IO.Path.ChangeExtension(_dataModel.FileName, "csv");
+            System.IO.File.WriteAllLines(fileName, matrix.Select(p => p.Key + "," + p.Value));
             return matrix;
         }
         #endregion

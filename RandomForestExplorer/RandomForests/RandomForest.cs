@@ -84,7 +84,7 @@ namespace RandomForestExplorer.RandomForests
                     }
                     sumOfErrors += tup.Item2;
                 }
-                bool ifPredictionSuccess = numOfPredictionSuccess >= entry.RegressionVotes.Count;
+                bool ifPredictionSuccess = numOfPredictionSuccess > (entry.RegressionVotes.Count / 2);
                 double averageError = sumOfErrors / (double)entry.RegressionVotes.Count;
                 Tuple<bool, double> aggrigation = new Tuple<bool, double>(ifPredictionSuccess, averageError);
                 result.Add(entry.Index, aggrigation);
